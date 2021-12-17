@@ -1,0 +1,28 @@
+[12-Dec-2021 04:51:29 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Eloquent\Model' not found in /home/digitalmuda/public_html/app/Restaurant/Booking.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Restaurant/Booking.php on line 7
+[12-Dec-2021 04:51:29 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Eloquent\Model' not found in /home/digitalmuda/public_html/app/Restaurant/Booking.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Restaurant/Booking.php on line 7
+[12-Dec-2021 04:51:29 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Eloquent\Model' not found in /home/digitalmuda/public_html/app/Restaurant/Booking.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Restaurant/Booking.php on line 7
+[12-Dec-2021 04:51:30 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Eloquent\Model' not found in /home/digitalmuda/public_html/app/Restaurant/Booking.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Restaurant/Booking.php on line 7
+[12-Dec-2021 04:51:30 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Eloquent\Model' not found in /home/digitalmuda/public_html/app/Restaurant/Booking.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Restaurant/Booking.php on line 7
+[12-Dec-2021 04:51:33 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Eloquent\Model' not found in /home/digitalmuda/public_html/app/Restaurant/Booking.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Restaurant/Booking.php on line 7
+[12-Dec-2021 04:51:34 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Eloquent\Model' not found in /home/digitalmuda/public_html/app/Restaurant/Booking.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Restaurant/Booking.php on line 7

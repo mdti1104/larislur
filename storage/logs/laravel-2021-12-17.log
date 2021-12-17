@@ -1,0 +1,2 @@
+[2021-12-17 11:05:58] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2021-12-17 14:29:32] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  

@@ -1,0 +1,28 @@
+[05-Dec-2021 03:20:59 UTC] PHP Fatal error:  Uncaught Error: Class 'Tests\TestCase' not found in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php on line 10
+[05-Dec-2021 03:20:59 UTC] PHP Fatal error:  Uncaught Error: Class 'Tests\TestCase' not found in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php on line 10
+[05-Dec-2021 03:21:00 UTC] PHP Fatal error:  Uncaught Error: Class 'Tests\TestCase' not found in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php on line 10
+[05-Dec-2021 03:21:00 UTC] PHP Fatal error:  Uncaught Error: Class 'Tests\TestCase' not found in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php on line 10
+[05-Dec-2021 03:21:00 UTC] PHP Fatal error:  Uncaught Error: Class 'Tests\TestCase' not found in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php on line 10
+[05-Dec-2021 03:21:05 UTC] PHP Fatal error:  Uncaught Error: Class 'Tests\TestCase' not found in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php on line 10
+[05-Dec-2021 03:21:06 UTC] PHP Fatal error:  Uncaught Error: Class 'Tests\TestCase' not found in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/tests/Feature/ExampleTest.php on line 10

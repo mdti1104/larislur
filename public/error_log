@@ -1,0 +1,1 @@
+[13-Nov-2021 13:46:37 UTC] PHP Parse error:  syntax error, unexpected '?', expecting variable (T_VARIABLE) in /home/digitalmuda/public_html/vendor/symfony/polyfill-php80/bootstrap.php on line 29

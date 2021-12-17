@@ -1,0 +1,28 @@
+[12-Dec-2021 04:50:54 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Exceptions\Handler' not found in /home/digitalmuda/public_html/app/Exceptions/Handler.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Exceptions/Handler.php on line 14
+[12-Dec-2021 04:50:54 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Exceptions\Handler' not found in /home/digitalmuda/public_html/app/Exceptions/Handler.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Exceptions/Handler.php on line 14
+[12-Dec-2021 04:50:54 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Exceptions\Handler' not found in /home/digitalmuda/public_html/app/Exceptions/Handler.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Exceptions/Handler.php on line 14
+[12-Dec-2021 04:50:54 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Exceptions\Handler' not found in /home/digitalmuda/public_html/app/Exceptions/Handler.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Exceptions/Handler.php on line 14
+[12-Dec-2021 04:50:59 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Exceptions\Handler' not found in /home/digitalmuda/public_html/app/Exceptions/Handler.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Exceptions/Handler.php on line 14
+[12-Dec-2021 04:51:04 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Exceptions\Handler' not found in /home/digitalmuda/public_html/app/Exceptions/Handler.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Exceptions/Handler.php on line 14
+[12-Dec-2021 04:51:04 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Exceptions\Handler' not found in /home/digitalmuda/public_html/app/Exceptions/Handler.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/digitalmuda/public_html/app/Exceptions/Handler.php on line 14
