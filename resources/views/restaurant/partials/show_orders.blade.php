@@ -31,12 +31,14 @@
             </div>
             @if($orders_for == 'kitchen')
             	<a href="#" class="btn btn-flat small-box-footer bg-yellow mark_as_cooked_btn" data-href="{{action('Restaurant\KitchenController@markAsCooked', [$order->id])}}"><i class="fa fa-check-square-o"></i> @lang('restaurant.mark_as_cooked')</a>
-            @elseif($orders_for == 'waiter' && $order->res_order_status != 'served')
+            @elseif($order_status == 'cooked')
             	<a href="#" class="btn btn-flat small-box-footer bg-yellow mark_as_served_btn" data-href="{{action('Restaurant\OrderController@markAsServed', [$order->id])}}"><i class="fa fa-check-square-o"></i> @lang('restaurant.mark_as_served')</a>
             @else
             	<div class="small-box-footer bg-gray">&nbsp;</div>
             @endif
             	<a href="#" class="btn btn-flat small-box-footer bg-info btn-modal" data-href="{{ action('SellController@show', [$order->id])}}" data-container=".view_modal">@lang('restaurant.order_details') <i class="fa fa-arrow-circle-right"></i></a>
+				<a href="{{action('Restaurant\KitchenController@line_orders', [$order->id])}}" class="btn btn-flat small-box-footer bg-green" >Line Orders<i class="fa fa-arrow-circle-right"></i></a>
+
          </div>
 	</div>
 	@if($loop->iteration % 4 == 0)

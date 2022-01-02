@@ -266,7 +266,6 @@ class ProductController extends ApiController
         $search = request()->only(['sku', 'name']);
         
         $products = $this->__getProducts($business_id, $filters, $search, true); 
-
         return ProductResource::collection($products);
     }
 

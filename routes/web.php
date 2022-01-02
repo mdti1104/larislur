@@ -336,6 +336,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
         Route::get('/kitchen/mark-as-cooked/{id}', 'Restaurant\KitchenController@markAsCooked');
         Route::post('/refresh-orders-list', 'Restaurant\KitchenController@refreshOrdersList');
         Route::post('/refresh-line-orders-list', 'Restaurant\KitchenController@refreshLineOrdersList');
+        Route::get('/view-line/{id}', 'Restaurant\KitchenController@line_orders');
+        Route::get('/kitchen/mark-line-cooked/{id}', 'Restaurant\KitchenController@markAsCookedLine');
 
         Route::get('/orders', 'Restaurant\OrderController@index');
         Route::get('/orders/mark-as-served/{id}', 'Restaurant\OrderController@markAsServed');

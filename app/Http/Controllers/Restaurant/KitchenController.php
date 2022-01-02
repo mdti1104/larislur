@@ -44,14 +44,55 @@ class KitchenController extends Controller
         // if (!auth()->user()->can('sell.view')) {
         //     abort(403, 'Unauthorized action.');
         // }
-
         $business_id = request()->session()->get('user.business_id');
         $orders = $this->restUtil->getAllOrders($business_id, ['line_order_status' => 'received']);
-
-        return view('restaurant.kitchen.index', compact('orders'));
+        $orders_coocked = $this->restUtil->getAllOrders($business_id, ['line_order_status' => 'cooked']);
+        $served_orders = $this->restUtil->getAllOrders($business_id, ['line_order_status' => 'served']);
+        return view('restaurant.kitchen.index', compact('orders','served_orders','orders_coocked')); 
     }
+    public function line_orders($id)
+    {
+        $business_id = request()->session()->get('user.business_id');
+        $orders = $this->restUtil->getLineOrders($business_id, ['transaction_id' => $id]);
+        return view('restaurant.kitchen.line_orders', compact('orders','id')); 
 
-    /**
+    }
+    public function markAsCookedLine($id)
+    {
+        try {
+            $business_id = request()->session()->get('user.business_id');
+            $user_id = request()->session()->get('user.id');
+
+            $query = TransactionSellLine::where('id', $id);
+
+            if($this->restUtil->is_service_staff($user_id)){
+                $query->where('res_service_staff_id', $user_id);
+            }
+            $sell_line = $query->first();
+
+            if (!empty($sell_line)) {
+                $sell_line->res_line_order_status = 'cooked';
+                $sell_line->save();
+                $output = ['success' => 1,
+                            'msg' => trans("restaurant.order_successfully_marked_cooked")
+                        ];
+            } else {
+                $output = ['success' => 0,
+                            'msg' => trans("messages.something_went_wrong")
+                        ];
+            }
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            
+            $output = ['success' => 0,
+                            'msg' => trans("messages.something_went_wrong")
+                        ];
+        }
+
+        return $output;
+
+    }
+    /**getLineOrders185
      * Marks an order as cooked
      * @return json $output
      */
@@ -112,7 +153,12 @@ class KitchenController extends Controller
         }
         
         $orders = $this->restUtil->getAllOrders($business_id, $filter);
-        return view('restaurant.partials.show_orders', compact('orders', 'orders_for'));
+        if(!empty($request->single)){
+            $line_orders = $this->restUtil->getLineOrders($business_id, ['transaction_id' => $request->single]);
+            return view('restaurant.partials.line_orders', compact('line_orders', 'orders_for'));
+        }else{
+            return view('restaurant.partials.show_orders', compact('orders', 'orders_for'));
+        }
     }
 
     /**
@@ -141,7 +187,10 @@ class KitchenController extends Controller
             $filter['waiter_id'] = $service_staff_id;
         }
         
-        $line_orders = $this->restUtil->getLineOrders($business_id, $filter);
+         $line_orders = $this->restUtil->getLineOrders($business_id, $filter);
+        if(!empty($request->single)){
+          $line_orders = $this->restUtil->getLineOrders($business_id, ['transaction_id' => $request->single]);
+        }
         return view('restaurant.partials.line_orders', compact('line_orders', 'orders_for'));
     }
 }
