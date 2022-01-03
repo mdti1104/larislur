@@ -15,6 +15,7 @@ class ProductResource extends Resource
     public function toArray($request)
     {
         $array = parent::toArray($request);
+        dd($array);
         $return = [];
         foreach ($array['product_variations'] as $key => $value) {
             foreach ($value['variations'] as $k => $v) {
@@ -38,7 +39,6 @@ class ProductResource extends Resource
                 }
             }
         }
-
 
         return $return;
     }

@@ -6,6 +6,7 @@ Route::group(['middleware' => ['web', 'SetSessionData', 'auth', 'language', 'tim
     Route::resource('/client', 'ClientController');
     Route::get('/regenerate', 'ClientController@regenerate');
 });
+Route::get('/connector/api/orderid/{id}', 'Modules\Connector\Http\Controllers\Api\ProductController@orderid');
 
 
 Route::group(['middleware' => ['auth:api', 'timezone'], 'prefix' => 'connector/api', 'namespace' => 'Modules\Connector\Http\Controllers\Api'], function()

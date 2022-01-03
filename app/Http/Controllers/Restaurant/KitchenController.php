@@ -64,12 +64,11 @@ class KitchenController extends Controller
             $user_id = request()->session()->get('user.id');
 
             $query = TransactionSellLine::where('id', $id);
-
+            
             if($this->restUtil->is_service_staff($user_id)){
                 $query->where('res_service_staff_id', $user_id);
             }
             $sell_line = $query->first();
-
             if (!empty($sell_line)) {
                 $sell_line->res_line_order_status = 'cooked';
                 $sell_line->save();

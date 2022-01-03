@@ -13,6 +13,10 @@
 
 Route::group(['namespace' => '\Modules\ProductCatalogue\Http\Controllers'], function () {
 	Route::get('/catalogue/{business_id}/{location_id}', 'ProductCatalogueController@index');
+	Route::get('/catalogue/{business_id}/', 'ProductCatalogueController@all');
+	Route::post('/add_cart/{id}', 'ProductCatalogueController@add_cart');
+	Route::get('/cart', 'ProductCatalogueController@cart');
+	Route::get('/success', 'ProductCatalogueController@success');
 	Route::get('/show-catalogue/{business_id}/{product_id}', 'ProductCatalogueController@show');
 });
 

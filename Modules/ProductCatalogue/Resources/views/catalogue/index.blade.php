@@ -2,6 +2,24 @@
 @section('title', $business->name)
 
 @section('content')
+<style>
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#0C9;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
+}
+
+.my-float{
+	margin-top:22px;
+}
+</style>
 <!-- Content Header (Page header) -->
 <section class="content-header text-center" id="top">
     <h2>{{$business->name}}</h2>
@@ -34,6 +52,7 @@
                         <li><a href="#category{{$key}}" class="menu">{{$value}}</a></li>
                     @endforeach 
                         <li><a href="#category0" class="menu">Uncategorized</a></li>           
+                        <!-- <li><a > Pesanan Saya</a></li>            -->
                     </ul>
                 </div><!--/.nav-collapse -->
             </div><!--/.container-fluid -->
@@ -73,7 +92,7 @@
                                 $min_price = $product->variations->min('sell_price_inc_tax');
                             @endphp
                             <h2 class="catalogue-title">
-                                <a href="#" class="show-product-details" data-href="{{action('\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController@show',  [$business->id, $product->id])}}?location_id={{$business_location->id}}">
+                                <a href="#" class="show-product-details" id="product_name_{{$product->id}}" data-name="{{$product->name}}" data-href="{{action('\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController@show',  [$business->id, $product->id])}}?location_id={{$business_location->id}}">
                                     {{$product->name}}
                                 </a>
                             </h2>
@@ -81,7 +100,7 @@
                                 <tr>
                                     <th class="pb-0"> @lang('lang_v1.price'):</th>
                                     <td class="pb-0">
-                                        <span class="display_currency" data-currency_symbol="true">{{($max_price)}}</span> @if($max_price != $min_price) - <span class="display_currency" data-currency_symbol="true">{{($min_price)}}</span> @endif
+                                        <span class="display_currency" data-currency_symbol="true" id="product_price_{{$product->id}}" data-price="{{$max_price}}">{{($max_price)}}</span> @if($max_price != $min_price) - <span class="display_currency" data-currency_symbol="true">{{($min_price)}}</span> @endif
                                     </td>
                                 </tr>
                                 <tr>
@@ -96,15 +115,19 @@
                                     <tr>
                                         <th>{{$product_variation->first()->product_variation->name}}:</th>
                                         <td>
-                                            <select class="form-control input-sm">
+                                            <select class="form-control input-sm" id="variant_id_{{$product->id}}">
                                             @foreach($product_variation as $variation)
-                                                <option value="{{$variation->id}}">{{$variation->name}} ({{$variation->sub_sku}}) - {{($variation->sell_price_inc_tax)}}</option>
+                                                <option value="{{$variation->id}}" data-price="{{$variation->sell_price_inc_tax}}" data-name="{{$variation->name}}">{{$variation->name}} ({{$variation->sub_sku}}) - {{($variation->sell_price_inc_tax)}}</option>
                                             @endforeach
                                             </select>
                                         </td>
                                     </tr>
                                 @endforeach
                             @endif
+                            <tr>
+                                    <td></td>
+                                    <td><button data-href="{{action('\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController@add_cart',$product->id)}}" type="button" class="btn btn-info no-print order_now" data-id="{{$product->id}}" data-name="{{$product->name}}">Pesan Sekarang</button></td>
+                                </tr>
                             </table>
                         </div>
                     </div>
@@ -122,13 +145,9 @@
 </section>
 <!-- /.content -->
 <!-- Add currency related field-->
-<input type="hidden" id="__code" value="{{$business->currency->code}}">
-<input type="hidden" id="__symbol" value="{{$business->currency->symbol}}">
-<input type="hidden" id="__thousand" value="{{$business->currency->thousand_separator}}">
-<input type="hidden" id="__decimal" value="{{$business->currency->decimal_separator}}">
-<input type="hidden" id="__symbol_placement" value="{{$business->currency->currency_symbol_placement}}">
-<input type="hidden" id="__precision" value="{{config('constants.currency_precision', 2)}}">
-<input type="hidden" id="__quantity_precision" value="{{config('constants.quantity_precision', 2)}}">
+<a href="{{action('\Modules\ProductCatalogue\Http\Controllers\ProductCatalogueController@cart')}}" class="float">
+<i class="fa fa-cart-plus my-float"></i>
+</a>
 <div class="modal fade product_modal" tabindex="-1" role="dialog" 
     aria-labelledby="gridSystemModalLabel">
 </div>
@@ -164,7 +183,29 @@
 
         __currency_convert_recursively($('.content'));
     });
+    $(document).on('click','.order_now',function(){
+        const id = $(this).data('id')
+        const variant = $('#variant_id_'+id).val()
+        var price = $('#variant_id_'+id).find(':selected').data('price')
+        var v_token = "{{csrf_token()}}";
+        if (!price) {
+        var price = $('#product_price_'+id).data('price')          
+        }
+        $.ajax({
+            url: $(this).data('href'),
+            type: "POST",
+            data: {
+                id : id,
+                variant : variant,
+                price : price,
+                _token : v_token
+            },
+            success: function(){
+                swal("Berhasil!", "", "success");
+            }
+        });
 
+    })
     $(document).on('click', '.show-product-details', function(e){
         e.preventDefault();
         $.ajax({
