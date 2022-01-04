@@ -1626,7 +1626,8 @@ class SellPosController extends Controller
                 $is_package_slip = !empty($request->input('package_slip')) ? true : false;
                 $invoice_layout_id = $transaction->is_direct_sale ? $transaction->location->sale_invoice_layout_id : null;
                 $receipt = $this->receiptContent($business_id, $transaction->location_id, $transaction_id, $printer_type, $is_package_slip, false, $invoice_layout_id);
-
+                dd($receipt);
+                
                 if (!empty($receipt)) {
                     $output = ['success' => 1, 'receipt' => $receipt];
                 }
@@ -1642,6 +1643,47 @@ class SellPosController extends Controller
         }
     }
 
+    public function printInvoiceAPi(Request $request,$business_id, $transaction_id)
+    {
+            try {
+                $output = ['success' => 0,
+                        'msg' => trans("messages.something_went_wrong")
+                        ];
+
+            
+                $transaction = Transaction::where('business_id', $business_id)
+                                ->where('id', $transaction_id)
+                                ->with(['location'])
+                                ->first();
+
+                if (empty($transaction)) {
+                    return $output;
+                }
+
+                $printer_type = 'browser';
+                if (!empty(request()->input('check_location')) && request()->input('check_location') == true) {
+                    $printer_type = $transaction->location->receipt_printer_type;
+                }
+
+                $is_package_slip = !empty($request->input('package_slip')) ? true : false;
+                $invoice_layout_id = $transaction->is_direct_sale ? $transaction->location->sale_invoice_layout_id : null;
+                $receipt = $this->receiptContent($business_id, $transaction->location_id, $transaction_id, $printer_type, $is_package_slip, false, $invoice_layout_id);
+                if (!empty($receipt)) {
+                    
+                    $output = ['success' => 1, 'receipt' => $receipt];
+                }
+            } catch (\Exception $e) {
+                dd($e->getMessage());
+                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+                
+                $output = ['success' => 0,
+                        'msg' => trans("messages.something_went_wrong")
+                        ];
+            }
+
+            return $output;
+        
+    }
     /**
      * Gives suggetion for product based on category
      *

@@ -12,6 +12,7 @@
 */
 
 include_once('install_r.php');
+Route::get('/sells/{business_id}/{transaction_id}/print', 'SellPosController@printInvoiceAPi')->name('sell.printInvoiceAPi');
 
 Route::middleware(['setData'])->group(function () {
     Route::get('/', function () {
