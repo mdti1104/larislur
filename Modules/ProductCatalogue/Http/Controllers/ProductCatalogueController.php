@@ -13,7 +13,7 @@ use App\Utils\ProductUtil;
 use App\BusinessLocation;
 use App\Utils\ModuleUtil;
 use App\Category;
-
+use DB;
 class ProductCatalogueController extends Controller
 {
     /**
@@ -41,6 +41,7 @@ class ProductCatalogueController extends Controller
      */
     public function index($business_id, $location_id)
     {
+
         $products = Product::where('business_id', $business_id)
                 ->whereHas('product_locations', function($q) use ($location_id){
                     $q->where('product_locations.location_id', $location_id);
@@ -116,9 +117,147 @@ class ProductCatalogueController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $business_locations = BusinessLocation::forDropdown($business_id);
+        $business_locations = $business_locations->add('all');
         $business = Business::findOrFail($business_id);
-
         return view('productcatalogue::catalogue.generate_qr')
                     ->with(compact('business_locations', 'business'));
+    }
+    public function all($business_id)
+    {
+        $products = Product::where('business_id', $business_id)
+        ->ProductForSales()
+        ->with(['variations', 'variations.product_variation', 'category'])
+        ->where('type','!=','modifier')
+        ->get()
+        ->groupBy('category_id');
+        $business = Business::with(['currency'])->findOrFail($business_id);
+        $business_location = BusinessLocation::where('business_id', $business_id)->first();
+        $now = \Carbon::now()->toDateTimeString();
+        $discounts = Discount::where('business_id', $business_id)
+                                ->where('is_active', 1)
+                                ->where('starts_at', '<=', $now)
+                                ->where('ends_at', '>=', $now)
+                                ->orderBy('priority', 'desc')
+                                ->get();
+
+        $categories = Category::forDropdown($business_id, 'product');
+        return view('productcatalogue::catalogue.index')->with(compact('products', 'business', 'discounts', 'business_location', 'categories'));
+    }
+    public function success(Request $request)
+    {
+        $order =  DB::table('orders_catalog')->where('session_id',session()->getId())->first();
+        if (!$order) {
+            $max = DB::table('orders_catalog')->orderBy('orders_id','DESC')->first();
+        if ($max) {
+            $order_no = $this->generateOrderNo($max->orders_id + 1);
+        }else{
+            $order_no = $this->generateOrderNo(1);
+        }
+        $cart = $request->session()->get('cart');
+
+        $order_id = DB::table('orders_catalog')->insertGetId([
+            'order_no' => $order_no,
+            'session_id' => session()->getId(),
+        ]);
+        $carts = $this->CartMapping($cart);
+        foreach ($carts['cart'] as $key => $value) {
+          if ($value['variant']) {
+             $data = [
+                 'id_product' => $value['id_product'],
+                 'id_orders' => $order_id,
+                 'variation_id' => $value['id'],
+                 'quantity' => $value['quantity'],
+             ];
+          }else{
+            $data = [
+                'id_product' => $value['id'],
+                'id_orders' => $order_id,
+                'quantity' => $value['quantity'],
+                'variation_id' => null
+            ];
+          }
+          DB::table('product_orders')->insert($data);
+        }
+        }else{
+            $order_no = $order->order_no;
+
+        }
+       
+        return view('productcatalogue::catalogue.success',compact('order_no'));
+
+    }
+    public function generateOrderNo($string)
+    {
+
+
+        return 'KKJ' . str_pad($string, 4, '0', STR_PAD_LEFT);
+    }
+    public function CartMapping($cart)
+    {
+        $return = [];
+        $total = 0;
+        foreach ($cart as $key => $value) {
+            $product = Product::with(['variations', 'variations.product_variation', 'variations.group_prices', 'variations.media', 'product_locations', 'warranty'])
+            ->findOrFail($value['id_product']);
+            if ($value['id_variant']) {
+               $varian = $product->variations()->findOrFail($value['id_variant']);
+               $data = [
+                'name' => $product->name .' - '.$varian->name,
+                'harga' => (int) $value['price'],
+                'variant' => true,
+                'id_product' => $value['id_product'],
+                'id'=> $value['id_variant']
+               ];
+            }else{
+              $data = [
+                    'name' => $product->name,
+                    'harga' => (int) $value['price'],
+                    'id_product' => $value['id_product'],
+                    'variant' => false,
+                    'id'=> $value['id_product']
+                   ]; 
+            }
+            $total += $data['harga'];
+            array_push($return,$data);
+        }
+        $qty = array_count_values(array_column($return, 'id'));
+        $unique = array_map("unserialize", array_unique(array_map("serialize", $return)));
+        $cart =  array_map(function ($return) use ($qty) {
+            $return['quantity'] = $qty[$return['id']];
+            $return['subtotal'] = $qty[$return['id']] * (int) $return['harga'];
+            return $return;
+        }, $unique);
+        return [
+            'cart' => $cart,
+            'total' => $total,
+        ];
+    }
+    public function cart(Request $request)
+    {
+
+        $cart = $request->session()->get('cart');
+        $mapp = $this->CartMapping($cart);
+        
+        return view('productcatalogue::catalogue.cart',$mapp);
+    }
+    public function add_cart(Request $request)
+    {
+      $cart = $request->session()->get('cart');
+      if ($cart) {
+         $array = [];
+         $data = ['id_product' => $request->id,'id_variant' => $request->variant,'price' => $request->price];
+         array_push($cart,$data);
+         $request->session()->put('cart',$cart);
+      }else{
+         $array = [];
+         array_push($array,[
+
+            'id_product' => $request->id,
+            'id_variant' => $request->variant,
+            'price' => $request->price
+        ]);
+
+		$request->session()->put('cart',$array);
+    }
     }
 }

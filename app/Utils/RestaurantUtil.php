@@ -50,44 +50,47 @@ class RestaurantUtil extends Util
         }
 
         //For new orders order_status is 'received'
-        if (!empty($filter['order_status']) && $filter['order_status'] == 'received') {
-            $query->whereNull('res_order_status');
-        }
-
+        
         if ( !empty($filter['line_order_status'])) {
             if ($filter['line_order_status'] == 'received') {
-                $query->whereHas('sell_lines', function($q) {
-                    $q->whereNull('res_line_order_status')
-                      ->orWhere('res_line_order_status', 'received');
+                $query->whereHas('sell_lines', function($q) {  
+                    $q->whereNull('res_line_order_status');
                 }, '>=', 1);
-            }
+    
 
+            }
             if ($filter['line_order_status'] == 'cooked') {
-                $query->whereHas('sell_lines', function($q) {
-                    $q->where('res_line_order_status', '!=', 'cooked');
-                }, '=', 0);
+                $query->whereHas('sell_lines', function($q) {                   
+                    $q->where('res_line_order_status', 'cooked');
+                }, '>=', 1);
             }
 
             if ($filter['line_order_status'] == 'served') {
                 $query->whereHas('sell_lines', function($q) {
-                    $q->where('res_line_order_status', '!=', 'served');
-                }, '=', 0);
+                    $q->where('res_line_order_status', 'served');
+                }, '>=', 1);
             }
         }
-
+        if (!empty($filter['transactions_id'])) {
+            $query->where('transactions.id', $filter['transactions_id']);
+        }
         if (!empty($filter['waiter_id'])) {
             $query->where('transactions.res_waiter_id', $filter['waiter_id']);
         }
                 
-        $orders =  $query->select(
+        $query =  $query->select(
             'transactions.*',
             'contacts.name as customer_name',
             'bl.name as business_location',
             'rt.name as table_name'
         )->with(['sell_lines'])
-                ->orderBy('created_at', 'desc')
-                ->get();
+                ->orderBy('created_at', 'desc');
+        if(!empty($filter['single'])){
+          $orders = $query->first();
+        }else{
+          $orders = $query->get();
 
+        }      
         return $orders;
     }
 
@@ -155,22 +158,23 @@ class RestaurantUtil extends Util
                 ->where('t.business_id', $business_id)
                 ->where('t.type', 'sell')
                 ->where('t.status', 'final');
-
         if (empty($filter['order_status'])) {
             $query->where(function ($q) {
                 $q->where('res_line_order_status', '!=', 'served')
                 ->orWhereNull('res_line_order_status');
             });
         }
-
         if (!empty($filter['waiter_id'])) {
-            $query->where('transaction_sell_lines.res_service_staff_id', $filter['waiter_id']);
+
+            $query->where('transaction_sell_lines.res_service_staff_id', null);
         }
         
         if (!empty($filter['line_id'])) {
             $query->where('transaction_sell_lines.id', $filter['line_id']);
         }
-        
+        if (!empty($filter['transaction_id'])) {
+            $query->where('transaction_sell_lines.transaction_id', $filter['transaction_id']);
+        }
         $orders =  $query->select(
             'p.name as product_name',
             'p.type as product_type',

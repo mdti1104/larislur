@@ -15,28 +15,11 @@
     </div>
     <br>
     <div class="row">
-    @component('components.widget', ['title' => 'Received Order'])
+    @component('components.widget', ['title' => 'Lines Order'])
+        <input type="hidden" id="single" value="{{$id}}">
         <input type="hidden" id="orders_for" value="kitchen">
         <div class="row" id="orders_div">
-         @include('restaurant.partials.show_orders', array('orders_for' => 'kitchen','orders' => $orders))   
-        </div>
-        <div class="overlay hide">
-          <i class="fas fa-sync fa-spin"></i>
-        </div>
-    @endcomponent
-    @component('components.widget', ['title' => 'Cooked Order'])
-        <input type="hidden" id="orders_for" value="waiter">
-        <div class="row" id="orders_div">
-         @include('restaurant.partials.show_orders', array('orders_for' => 'waiter','orders' => $orders_coocked))   
-        </div>
-        <div class="overlay hide">
-          <i class="fas fa-sync fa-spin"></i>
-        </div>
-    @endcomponent
-    @component('components.widget', ['title' => 'Serve Order'])
-        <input type="hidden" id="orders_for" value="waiter">
-        <div class="row" id="orders_div">
-         @include('restaurant.partials.show_orders', array('orders_for' => 'waiter','orders' => $served_orders))   
+         @include('restaurant.partials.line_orders', array('orders_for' => 'kitchen','line_orders' => $orders))   
         </div>
         <div class="overlay hide">
           <i class="fas fa-sync fa-spin"></i>

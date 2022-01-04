@@ -15,23 +15,32 @@ class ProductResource extends Resource
     public function toArray($request)
     {
         $array = parent::toArray($request);
-
-        $array['brand'] = $this->brand;
-        $array['unit'] = $this->unit;
-        $array['category'] = $this->category;
-        $array['sub_category'] = $this->sub_category;
-        $array['product_tax'] = $this->product_tax;
-
+        dd($array);
+        $return = [];
         foreach ($array['product_variations'] as $key => $value) {
             foreach ($value['variations'] as $k => $v) {
+                $return['id'] = $array['id'];
+                $return['sku'] = $v['sub_sku'];
+                $return['images'] = $array['image_url'];
+
+                $return['purchasePrice'] = $v['default_purchase_price'];
+                $return['desc'] = '';
+
+                if ($value['is_dummy']) {
+                   $return['name'] = $array['name'];
+                }else{
+                   $return['name'] = $array['name'] .' - '.$v['name'];
+                }
+
                if (isset($v['group_prices'])) {
-                    $array['product_variations'][$key]['variations'][$k]['selling_price_group'] = $v['group_prices'];
-                    unset($array['product_variations'][$key]['variations'][$k]['group_prices']);
+                    $return['sellingPrice'] = $v['group_prices'];
+                }else{
+                    $return['sellingPrice'] = $v['sell_price_inc_tax'];
                 }
             }
         }
-        
-        return array_diff_key($array, array_flip($this->__excludeFields()));
+
+        return $return;
     }
 
     private function __excludeFields(){

@@ -84,7 +84,12 @@
     $(document).on('click', '#generate_qr', function(e){
         $('#qrcode').html('');
         if ($('#location_id').val()) {
-            var link = "{{url('catalogue/' . session('business.id'))}}/" + $('#location_id').val();
+            var all = $('#location_id :selected').text();
+            if (all == 'all') {
+            var link = "{{url('catalogue/' . session('business.id'))}}";
+            }else{
+             var link = "{{url('catalogue/' . session('business.id'))}}/" + $('#location_id').val();
+            }
             var color = '#000000';
             if ($('#color').val().trim() != '') {
                 color = $('#color').val();

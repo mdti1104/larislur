@@ -102,6 +102,7 @@ function add_selected_modifiers(selected, index, quantity = 1) {
 function refresh_orders() {
     $('.overlay').removeClass('hide');
     var orders_for = $('input#orders_for').val();
+    var single = $('input#single').val();
     var service_staff_id = '';
     if ($('select#service_staff_id').val()) {
         service_staff_id = $('select#service_staff_id').val();
@@ -109,7 +110,7 @@ function refresh_orders() {
     $.ajax({
         method: 'POST',
         url: '/modules/refresh-orders-list',
-        data: { orders_for: orders_for, service_staff_id: service_staff_id },
+        data: { orders_for: orders_for, service_staff_id: service_staff_id ,single:single},
         dataType: 'html',
         success: function(data) {
             $('#orders_div').html(data);
@@ -120,7 +121,7 @@ function refresh_orders() {
     $.ajax({
         method: 'POST',
         url: '/modules/refresh-line-orders-list',
-        data: { orders_for: orders_for, service_staff_id: service_staff_id },
+        data: { orders_for: orders_for, service_staff_id: service_staff_id ,single:single},
         dataType: 'html',
         success: function(data) {
             $('#line_orders_div').html(data);

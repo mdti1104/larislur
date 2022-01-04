@@ -12,6 +12,7 @@ use Modules\Connector\Transformers\CommonResource;
 use App\Product;
 use App\Variation;
 use App\SellingPriceGroup;
+use DB;
 
 /**
  * @group Product management
@@ -266,8 +267,52 @@ class ProductController extends ApiController
         $search = request()->only(['sku', 'name']);
         
         $products = $this->__getProducts($business_id, $filters, $search, true); 
+        $mapp = $this->mappProduct($products);
+          return response()->json([
+            'status' => 'success fetch product',
+            'data' => $mapp
+        ]);
+    }
+    private function mappProduct($products){
+        $return = [];
+        $data = [];
+       foreach ($products as $key => $array) {
+        foreach ($array['product_variations'] as  $value) {
+            foreach ($value['variations'] as $k => $v) {
+                $return['id'] = $array['id'];
+                $return['variation_id'] = $v['id'];
+                $return['sku'] = $v['sub_sku'];
+                $return['images'] = $array['image_url'];
 
-        return ProductResource::collection($products);
+                $return['purchasePrice'] = $v['default_purchase_price'];
+                $return['desc'] = '';
+
+                if ($value['is_dummy']) {
+                   $return['name'] = $array['name'];
+                }else{
+                   $return['name'] = $array['name'] .' - '.$v['name'];
+                }
+               if (isset($v['group_prices'])) {
+                 $return['sellingPrice'] = $v['sell_price_inc_tax'];
+
+                }else{
+                    $return['sellingPrice'] = $v['sell_price_inc_tax'];
+                }
+              array_push($data,$return);
+
+            }
+        }
+       }
+      return $data;
+    }
+    public function orderid($order_id)
+    {
+        $order_id = DB::table('orders_catalog')->where('order_no',$order_id)
+        ->join('product_orders','product_orders.id_orders','orders_catalog.orders_id')->get();
+        return response()->json([
+            'status' => 'success fetch data',
+            'data' => $order_id
+        ]);
     }
 
     /**
@@ -496,7 +541,6 @@ class ProductController extends ApiController
         $filters['selling_price_group'] = request()->input('selling_price_group') == 1 ? true : false;
 
         $filters['product_ids'] = explode(',', $product_ids);
-
         $products = $this->__getProducts($business_id, $filters);
 
         return ProductResource::collection($products);
@@ -509,7 +553,6 @@ class ProductController extends ApiController
     private function __getProducts($business_id, $filters = [], $search = [], $pagination = false)
     {
         $query = Product::where('business_id', $business_id);
-
         $with = ['product_variations.variations.variation_location_details', 'brand', 'unit', 'category', 'sub_category', 'product_tax', 'product_variations.variations.media', 'product_locations'];
 
         if (!empty($filters['category_id'])) {
