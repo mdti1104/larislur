@@ -6,6 +6,9 @@
 				<i class="fa fa-table"></i>
 			</span>
 			{!! Form::select('res_table_id', $tables, $view_data['res_table_id'], ['class' => 'form-control', 'placeholder' => __('restaurant.select_table')]); !!}
+			<span class="input-group-btn">
+					<button type="button" data-container=".tables_modal" class="btn btn-default bg-white btn-flat addtables" data-href="{{action('Restaurant\TableController@create')}}"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+				</span>
 		</div>
 	</div>
 </div>
