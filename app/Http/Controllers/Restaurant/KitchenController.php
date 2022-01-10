@@ -45,7 +45,8 @@ class KitchenController extends Controller
         //     abort(403, 'Unauthorized action.');
         // }
         $business_id = request()->session()->get('user.business_id');
-        $orders = $this->restUtil->getAllOrders($business_id, ['line_order_status' => 'received']);
+        $location = auth()->user()->permitted_locations();
+        $orders = $this->restUtil->getAllOrders($business_id, ['line_order_status' => 'received','location_id' => $location]);
         $orders_coocked = $this->restUtil->getAllOrders($business_id, ['line_order_status' => 'cooked']);
         $served_orders = $this->restUtil->getAllOrders($business_id, ['line_order_status' => 'served']);
         return view('restaurant.kitchen.index', compact('orders','served_orders','orders_coocked')); 

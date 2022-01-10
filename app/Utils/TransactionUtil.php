@@ -2933,6 +2933,7 @@ class TransactionUtil extends Util
             //Iterate over the rows, assign the purchase line to sell lines.
             $qty_selling = $line->quantity;
             foreach ($rows as $k => $row) {
+
                 $qty_allocated = 0;
 
                 //Check if qty_available is more or equal
@@ -3012,7 +3013,6 @@ class TransactionUtil extends Util
                             "messages.purchase_sell_mismatch_exception",
                             ['product' => $mismatch_name]
                         );
-
                         if ($stop_selling_expired) {
                             $mismatch_error .= __('lang_v1.available_stock_expired');
                         }

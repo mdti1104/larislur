@@ -74,6 +74,15 @@ class RestaurantUtil extends Util
         if (!empty($filter['transactions_id'])) {
             $query->where('transactions.id', $filter['transactions_id']);
         }
+        if (!empty($filter['location_id'])) {
+            $query->whereHas('sell_lines', function($q) use ($filter){
+               $q->whereHas('product',function($q) use ($filter){
+                $q->whereHas('product_locations',function($q) use ($filter){
+                    $q->whereIn('id',$filter['location_id']);
+                 }, '>=', 1);
+               }, '>=', 1);
+            }, '>=', 1);
+        }
         if (!empty($filter['waiter_id'])) {
             $query->where('transactions.res_waiter_id', $filter['waiter_id']);
         }
@@ -84,12 +93,11 @@ class RestaurantUtil extends Util
             'bl.name as business_location',
             'rt.name as table_name'
         )->with(['sell_lines'])
-                ->orderBy('created_at', 'desc');
+                ->orderBy('created_at', 'asc');
         if(!empty($filter['single'])){
           $orders = $query->first();
         }else{
           $orders = $query->get();
-
         }      
         return $orders;
     }
