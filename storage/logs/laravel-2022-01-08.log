@@ -592,3 +592,19 @@
 #57 E:\\larislur_kokuja\\server.php(21): require_once('E:\\\\larislur_kok...')
 #58 {main}
 "} 
+[2022-01-08 22:41:47] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 22:42:03] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 22:42:50] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 22:44:19] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 22:44:20] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 22:44:21] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 22:44:28] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 22:48:51] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 22:54:25] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 22:54:32] local.EMERGENCY: ERROR: NOT ALLOWED: Mismatch between sold and purchase quantity. Product: Martabak SKU: 0030 Quantity: 1 Business: Kokuja Location: Kokuja  
+[2022-01-08 22:54:32] local.EMERGENCY: File:E:\larislur_kokuja\app\Utils\TransactionUtil.phpLine:3034Message:ERROR: NOT ALLOWED: Mismatch between sold and purchase quantity. Product: Martabak SKU: 0030 Quantity: 1  
+[2022-01-08 22:54:38] local.EMERGENCY: ERROR: NOT ALLOWED: Mismatch between sold and purchase quantity. Product: Martabak SKU: 0030 Quantity: 1 Business: Kokuja Location: Kokuja  
+[2022-01-08 22:54:38] local.EMERGENCY: File:E:\larislur_kokuja\app\Utils\TransactionUtil.phpLine:3034Message:ERROR: NOT ALLOWED: Mismatch between sold and purchase quantity. Product: Martabak SKU: 0030 Quantity: 1  
+[2022-01-08 23:09:58] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 23:13:14] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  
+[2022-01-08 23:14:01] local.EMERGENCY: File:E:\larislur_kokuja\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.phpLine:454Message:No query results for model [App\Variation].  

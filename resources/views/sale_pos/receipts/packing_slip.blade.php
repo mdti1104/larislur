@@ -1,4 +1,148 @@
-<table style="width:100%;">
+<style>
+	<style type="text/css">
+.f-8 {
+	font-size: 8px !important;
+}
+@media print {
+	* {
+    	font-size: 12px;
+    	font-family: 'Times New Roman';
+    	word-break: break-all;
+	}
+	.f-8 {
+		font-size: 8px !important;
+	}
+
+.headings{
+	font-size: 16px;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.sub-headings{
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.border-top{
+    border-top: 1px solid #242424;
+}
+.border-bottom{
+	border-bottom: 1px solid #242424;
+}
+
+.border-bottom-dotted{
+	border-bottom: 1px dotted darkgray;
+}
+
+td.serial_number, th.serial_number{
+	width: 5%;
+    max-width: 5%;
+}
+
+td.description,
+th.description {
+    width: 35%;
+    max-width: 35%;
+}
+
+td.quantity,
+th.quantity {
+    width: 15%;
+    max-width: 15%;
+    word-break: break-all;
+}
+td.unit_price, th.unit_price{
+	width: 25%;
+    max-width: 25%;
+    word-break: break-all;
+}
+
+td.price,
+th.price {
+    width: 20%;
+    max-width: 20%;
+    word-break: break-all;
+}
+
+.centered {
+    text-align: center;
+    align-content: center;
+}
+
+.ticket {
+    width: 100%;
+    max-width: 100%;
+}
+
+img {
+    max-width: inherit;
+    width: auto;
+}
+
+    .hidden-print,
+    .hidden-print * {
+        display: none !important;
+    }
+}
+.table-info {
+	width: 100%;
+}
+.table-info tr:first-child td, .table-info tr:first-child th {
+	padding-top: 8px;
+}
+.table-info th {
+	text-align: left;
+}
+.table-info td {
+	text-align: right;
+}
+.logo {
+	float: left;
+	width:35%;
+	padding: 10px;
+}
+
+.text-with-image {
+	float: left;
+	width:65%;
+}
+.text-box {
+	width: 100%;
+	height: auto;
+}
+.m-0 {
+	margin:0;
+}
+.textbox-info {
+	clear: both;
+}
+.textbox-info p {
+	margin-bottom: 0px
+}
+.flex-box {
+	display: flex;
+	width: 100%;
+}
+.flex-box p {
+	width: 50%;
+	margin-bottom: 0px;
+	white-space: nowrap;
+}
+.page-break  { display:block; page-break-before:always; }
+.table-f-12 th, .table-f-12 td {
+	font-size: 12px;
+	word-break: break-word;
+}
+
+.bw {
+	word-break: break-word;
+}
+.bb-lg {
+	border-bottom: 1px solid lightgray;
+}
+</style>	
+<table style="width:100%;" class="page-break">
 	<thead>
 		<tr>
 			<td>
