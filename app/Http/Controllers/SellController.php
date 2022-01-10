@@ -757,14 +757,12 @@ class SellController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Responsekokujakitchen
      */
     public function show($id)
     {
-        // if (!auth()->user()->can('sell.view') && !auth()->user()->can('direct_sell.access') && !auth()->user()->can('view_own_sell_only')) {
-        //     abort(403, 'Unauthorized action.');
-        // }
-
+       
+        $locations = auth()->user()->permitted_locations();
         $business_id = request()->session()->get('user.business_id');
         $taxes = TaxRate::where('business_id', $business_id)
                             ->pluck('name', 'id');
@@ -779,7 +777,6 @@ class SellController extends Controller
         }
 
         $sell = $query->firstOrFail();
-
         $activities = Activity::forSubject($sell)
            ->with(['causer', 'subject'])
            ->latest()
@@ -826,12 +823,12 @@ class SellController extends Controller
         }
         $status_color_in_activity = Transaction::sales_order_statuses();
         $sales_orders = $sell->salesOrders();
-
         return view('sale_pos.show')
             ->with(compact(
                 'taxes',
                 'sell',
                 'payment_types',
+                'locations',
                 'order_taxes',
                 'pos_settings',
                 'shipping_statuses',

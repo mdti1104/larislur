@@ -1,4 +1,5 @@
 @forelse($line_orders as $order)
+
 	<div class="col-md-3 col-xs-6 line_order_div">
 		<div class="small-box bg-gray">
             <div class="inner">
