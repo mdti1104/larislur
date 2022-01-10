@@ -563,6 +563,8 @@ class SellPosController extends Controller
                 
                 if ($print_invoice) {
                     $receipt = $this->receiptContent($business_id, $input['location_id'], $transaction->id, null, false, true, $invoice_layout_id);
+                    $packingSlip = $this->receiptContent($business_id, $input['location_id'], $transaction->id, null, true, true, $invoice_layout_id);
+                    $receipt['html_content'] .= $packingSlip['html_content'];
                 }
 
                 $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt ];
@@ -1244,8 +1246,9 @@ class SellPosController extends Controller
                     } else {
                         $receipt = '';
                     }
-                }
 
+                }
+                    
                 $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt ];
 
                 if (!empty($whatsapp_link)) {
@@ -1486,8 +1489,7 @@ class SellPosController extends Controller
                 }
             }
 
-            $output = $this->getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell);
-
+            $output = $this->getSellLineRow($variation_id, null, $quantity, $row_count, $is_direct_sell);
             if ($this->transactionUtil->isModuleEnabled('modifiers')  && !$is_direct_sell) {
                 $variation = Variation::find($variation_id);
                 $business_id = request()->session()->get('user.business_id');
@@ -1625,7 +1627,6 @@ class SellPosController extends Controller
                 $is_package_slip = !empty($request->input('package_slip')) ? true : false;
                 $invoice_layout_id = $transaction->is_direct_sale ? $transaction->location->sale_invoice_layout_id : null;
                 $receipt = $this->receiptContent($business_id, $transaction->location_id, $transaction_id, $printer_type, $is_package_slip, false, $invoice_layout_id);
-                dd($receipt);
                 
                 if (!empty($receipt)) {
                     $output = ['success' => 1, 'receipt' => $receipt];
