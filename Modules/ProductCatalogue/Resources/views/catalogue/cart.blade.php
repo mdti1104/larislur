@@ -102,7 +102,7 @@
                     </td>
                     <td data-th="Subtotal" class="text-center">{{"Rp " . number_format($value['subtotal'],2,',','.')}}</td>
                     <td class="actions" data-th="">
-                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                        <a href="/cart/delete/{{$value['id']}}"class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a >
                     </td>
                 </tr>
                 @endforeach
@@ -110,10 +110,10 @@
             <tfoot>
               
                 <tr>
-                    <td><a href="#" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
+                    <td><a href="{{url()->previous()}}" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
                     <td colspan="2" class="hidden-xs"></td>
                     <td class="hidden-xs text-center"><strong>Total {{"Rp " . number_format($total,2,',','.')}}</strong></td>
-                    <td><a href="/success" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a>
+                    <td><a @if(!empty($cart)) href="/success" @else href="#"  @endif  class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a>
                     </td>
                 </tr>
             </tfoot>

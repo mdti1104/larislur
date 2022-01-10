@@ -182,7 +182,6 @@ class SellPosController extends Controller
         $payment_lines[] = $this->dummyPaymentLine;
 
         $default_location = !empty($register_details->location_id) ? BusinessLocation::findOrFail($register_details->location_id) : null;
-
         $business_locations = BusinessLocation::forDropdown($business_id, false, true);
         $bl_attributes = $business_locations['attributes'];
         $business_locations = $business_locations['locations'];
@@ -1692,7 +1691,7 @@ class SellPosController extends Controller
      */
     public function getProductSuggestion(Request $request)
     {
-        if ($request->ajax()) {
+        // if ($request->ajax()) {
             $category_id = $request->get('category_id');
             $brand_id = $request->get('brand_id');
             $location_id = $request->get('location_id');
@@ -1725,11 +1724,7 @@ class SellPosController extends Controller
                         ->where('p.business_id', $business_id)
                         ->where('p.type', '!=', 'modifier')
                         ->where('p.is_inactive', 0)
-                        ->where('p.not_for_selling', 0)
-                        //Hide products not available in the selected location
-                        ->where(function ($q) use ($location_id) {
-                            $q->where('pl.location_id', $location_id);
-                        });
+                        ->where('p.not_for_selling', 0);
 
             //Include search
             if (!empty($term)) {
@@ -1797,7 +1792,7 @@ class SellPosController extends Controller
 
             return view('sale_pos.partials.product_list')
                     ->with(compact('products', 'allowed_group_prices', 'show_prices'));
-        }
+        // }
     }
 
     /**

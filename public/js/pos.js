@@ -135,115 +135,117 @@ $(document).ready(function() {
 
     if ($('#search_product').length) {
         //Add Product
-        $('#search_product')
-            .autocomplete({
-                delay: 1000,
-                source: function(request, response) {
-                    var price_group = '';
-                    var search_fields = [];
-                    $('.search_fields:checked').each(function(i){
-                      search_fields[i] = $(this).val();
-                    });
+        
+        console.log('test')
+        // $('#search_product')
+        //     .autocomplete({
+        //         delay: 1000,
+        //         source: function(request, response) {
+        //             var price_group = '';
+        //             var search_fields = [];
+        //             $('.search_fields:checked').each(function(i){
+        //               search_fields[i] = $(this).val();
+        //             });
 
-                    if ($('#price_group').length > 0) {
-                        price_group = $('#price_group').val();
-                    }
-                    $.getJSON(
-                        '/products/list',
-                        {
-                            price_group: price_group,
-                            location_id: $('input#location_id').val(),
-                            term: request.term,
-                            not_for_selling: 0,
-                            search_fields: search_fields
-                        },
-                        response
-                    );
-                },
-                minLength: 2,
-                response: function(event, ui) {
-                    if (ui.content.length == 1) {
-                        ui.item = ui.content[0];
-                        if ((ui.item.enable_stock == 1 && ui.item.qty_available > 0) || 
-                                (ui.item.enable_stock == 0)) {
-                            $(this)
-                                .data('ui-autocomplete')
-                                ._trigger('select', 'autocompleteselect', ui);
-                            $(this).autocomplete('close');
-                        }
-                    } else if (ui.content.length == 0) {
-                        toastr.error(LANG.no_products_found);
-                        $('input#search_product').select();
-                    }
-                },
-                focus: function(event, ui) {
-                    if (ui.item.qty_available <= 0) {
-                        return false;
-                    }
-                },
-                select: function(event, ui) {
-                    var searched_term = $(this).val();
-                    var is_overselling_allowed = false;
-                    if($('input#is_overselling_allowed').length) {
-                        is_overselling_allowed = true;
-                    }
+        //             if ($('#price_group').length > 0) {
+        //                 price_group = $('#price_group').val();
+        //             }
+        //             $.getJSON(
+        //                 '/products/list',
+        //                 {
+        //                     price_group: price_group,
+        //                     location_id: $('input#location_id').val(),
+        //                     term: request.term,
+        //                     not_for_selling: 0,
+        //                     search_fields: search_fields
+        //                 },
+        //                 response
+        //             );
+        //         },
+        //         minLength: 2,
+        //         response: function(event, ui) {
+        //             if (ui.content.length == 1) {
+        //                 ui.item = ui.content[0];
+        //                 if ((ui.item.enable_stock == 1 && ui.item.qty_available > 0) || 
+        //                         (ui.item.enable_stock == 0)) {
+        //                     $(this)
+        //                         .data('ui-autocomplete')
+        //                         ._trigger('select', 'autocompleteselect', ui);
+        //                     $(this).autocomplete('close');
+        //                 }
+        //             } else if (ui.content.length == 0) {
+        //                 toastr.error(LANG.no_products_found);
+        //                 $('input#search_product').select();
+        //             }
+        //         },
+        //         focus: function(event, ui) {
+        //             if (ui.item.qty_available <= 0) {
+        //                 return false;
+        //             }
+        //         },
+        //         select: function(event, ui) {
+        //             var searched_term = $(this).val();
+        //             var is_overselling_allowed = false;
+        //             if($('input#is_overselling_allowed').length) {
+        //                 is_overselling_allowed = true;
+        //             }
 
-                    if (ui.item.enable_stock != 1 || ui.item.qty_available > 0 || is_overselling_allowed) {
-                        $(this).val(null);
+        //             if (ui.item.enable_stock != 1 || ui.item.qty_available > 0 || is_overselling_allowed) {
+        //                 $(this).val(null);
 
-                        //Pre select lot number only if the searched term is same as the lot number
-                        var purchase_line_id = ui.item.purchase_line_id && searched_term == ui.item.lot_number ? ui.item.purchase_line_id : null;
-                        pos_product_row(ui.item.variation_id, purchase_line_id);
-                    } else {
-                        alert(LANG.out_of_stock);
-                    }
-                },
-            })
-            .autocomplete('instance')._renderItem = function(ul, item) {
-                var is_overselling_allowed = false;
-                if($('input#is_overselling_allowed').length) {
-                    is_overselling_allowed = true;
-                }
-            if (item.enable_stock == 1 && item.qty_available <= 0 && !is_overselling_allowed) {
-                var string = '<li class="ui-state-disabled">' + item.name;
-                if (item.type == 'variable') {
-                    string += '-' + item.variation;
-                }
-                var selling_price = item.selling_price;
-                if (item.variation_group_price) {
-                    selling_price = item.variation_group_price;
-                }
-                string +=
-                    ' (' +
-                    item.sub_sku +
-                    ')' +
-                    '<br> Price: ' +
-                    selling_price +
-                    ' (Out of stock) </li>';
-                return $(string).appendTo(ul);
-            } else {
-                var string = '<div>' + item.name;
-                if (item.type == 'variable') {
-                    string += '-' + item.variation;
-                }
+        //                 //Pre select lot number only if the searched term is same as the lot number
+        //                 var purchase_line_id = ui.item.purchase_line_id && searched_term == ui.item.lot_number ? ui.item.purchase_line_id : null;
+        //                 pos_product_row(ui.item.variation_id, purchase_line_id);
+        //             } else {
+        //                 alert(LANG.out_of_stock);
+        //             }
+        //         },
+        //     })
+        //     .autocomplete('instance')._renderItem = function(ul, item) {
+        //         var is_overselling_allowed = false;
+        //         if($('input#is_overselling_allowed').length) {
+        //             is_overselling_allowed = true;
+        //         }
+        //     if (item.enable_stock == 1 && item.qty_available <= 0 && !is_overselling_allowed) {
+        //         var string = '<li class="ui-state-disabled">' + item.name;
+        //         if (item.type == 'variable') {
+        //             string += '-' + item.variation;
+        //         }
+        //         var selling_price = item.selling_price;
+        //         if (item.variation_group_price) {
+        //             selling_price = item.variation_group_price;
+        //         }
+        //         string +=
+        //             ' (' +
+        //             item.sub_sku +
+        //             ')' +
+        //             '<br> Price: ' +
+        //             selling_price +
+        //             ' (Out of stock) </li>';
+        //         return $(string).appendTo(ul);
+        //     } else {
+        //         var string = '<div>' + item.name;
+        //         if (item.type == 'variable') {
+        //             string += '-' + item.variation;
+        //         }
 
-                var selling_price = item.selling_price;
-                if (item.variation_group_price) {
-                    selling_price = item.variation_group_price;
-                }
+        //         var selling_price = item.selling_price;
+        //         if (item.variation_group_price) {
+        //             selling_price = item.variation_group_price;
+        //         }
 
-                string += ' (' + item.sub_sku + ')' + '<br> Price: ' + selling_price;
-                if (item.enable_stock == 1) {
-                    var qty_available = __currency_trans_from_en(item.qty_available, false, false, __currency_precision, true);
-                    string += ' - ' + qty_available + item.unit;
-                }
-                string += '</div>';
+        //         string += ' (' + item.sub_sku + ')' + '<br> Price: ' + selling_price;
+        //         if (item.enable_stock == 1) {
+        //             var qty_available = __currency_trans_from_en(item.qty_available, false, false, __currency_precision, true);
+        //             string += ' - ' + qty_available + item.unit;
+        //         }
+        //         string += '</div>';
 
-                return $('<li>')
-                    .append(string)
-                    .appendTo(ul);
-            }
-        };
+        //         return $('<li>')
+        //             .append(string)
+        //             .appendTo(ul);
+        //     }
+        // };
     }
 
     //Update line total and check for quantity not greater than max quantity
@@ -1088,18 +1090,22 @@ $(document).ready(function() {
     });
 
     //Press enter on search product to jump into last quantty and vice-versa
-    $('#search_product').keydown(function(e) {
-        var key = e.which;
-        if (key == 9) {
-            // the tab key code
-            e.preventDefault();
-            if ($('#pos_table tbody tr').length > 0) {
-                $('#pos_table tbody tr:last')
-                    .find('input.pos_quantity')
-                    .focus()
-                    .select();
-            }
-        }
+    $('#search_product').change(function(e) {
+       if($(this).val().includes('KKJ') &&  $(this).val().length >= 6){
+        $.getJSON(
+                            '/order_number/'+ $(this).val(),
+                            function (result) {
+                                if(result.length > 0){
+                                    result.map(e => {
+                                        pos_product_row(e.variation_id,null,null,e.quantity);
+                                    })
+                                }else{
+                                    
+                                }
+
+                            }
+                        );
+       }
     });
     $('#pos_table').on('keypress', 'input.pos_quantity', function(e) {
         var key = e.which;
@@ -1122,7 +1128,19 @@ $(document).ready(function() {
     $('select#price_group').change(function() {
         $('input#hidden_price_group').val($(this).val());
     });
-
+    $(document).on('click','button.addtables',function (params) {
+        var url = $(this).data('href');
+        var container = $(this).data('container');
+        $.ajax({
+            url: url,
+            dataType: 'html',
+            success: function(result) {
+                $(container)
+                    .html(result)
+                    .modal('show');
+            },
+        });
+    })
     //Quick add product
     $(document).on('click', 'button.pos_add_quick_product', function() {
         var url = $(this).data('href');

@@ -1,1 +1,0 @@
-[2021-11-23 20:09:18] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/spatie/laravel-permission/src/Exceptions/PermissionAlreadyExists.phpLine:11Message:A `supplier.view_own` permission already exists for guard `web`.  

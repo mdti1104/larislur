@@ -1,9 +1,0 @@
-[2021-11-18 20:28:20] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  
-[2021-11-18 20:28:22] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  
-[2021-11-18 20:28:25] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  
-[2021-11-18 21:11:39] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  
-[2021-11-18 21:11:40] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  
-[2021-11-18 21:11:41] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  
-[2021-11-18 21:11:42] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  
-[2021-11-18 21:32:06] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  
-[2021-11-18 21:32:07] live.EMERGENCY: File:/home/digitalmuda/public_html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.phpLine:454Message:No query results for model [App\Variation].  
