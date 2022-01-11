@@ -2883,7 +2883,6 @@ class TransactionUtil extends Util
             
             //Get purchase lines, only for products with enable stock.
             $query = Transaction::join('purchase_lines AS PL', 'transactions.id', '=', 'PL.transaction_id')
-                ->where('transactions.business_id', $business['id'])
                 ->whereIn('transactions.type', ['purchase', 'purchase_transfer',
                     'opening_stock', 'production_purchase'])
                 ->where('transactions.status', 'received')
@@ -2892,6 +2891,8 @@ class TransactionUtil extends Util
                 ->where('PL.variation_id', $line->variation_id);
             if (!empty($business['product_id'])) {
                 $query->where('transactions.location_id', $product->product_locations->first()->id);
+            }else{
+                $query->where('transactions.business_id', $business['id']);
             }
             //If product expiry is enabled then check for on expiry conditions
             if ($stop_selling_expired && empty($purchase_line_id)) {
