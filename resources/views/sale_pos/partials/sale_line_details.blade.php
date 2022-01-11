@@ -21,6 +21,7 @@
         <th>{{ __('sale.subtotal') }}</th>
     </tr>
     @foreach($sell->sell_lines as $sell_line)
+        @if($sell_line->product->product_locations->whereIn('id',$locations)->first() || $locations == 'all');
         <tr>
             <td>{{ $loop->iteration }}</td>
             <td>
@@ -125,6 +126,8 @@
                 </td>
             </tr>
             @endforeach
+        @endif
+
         @endif
     @endforeach
 </table>

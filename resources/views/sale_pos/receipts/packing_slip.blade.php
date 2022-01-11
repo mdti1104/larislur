@@ -1,8 +1,5 @@
 <style>
-	<style type="text/css">
-.f-8 {
-	font-size: 8px !important;
-}
+
 @media print {
 	* {
     	font-size: 12px;
@@ -148,7 +145,7 @@ img {
 			<td>
 
 			<p class="text-right color-555">
-				@lang('lang_v1.packing_slip')
+				<!-- @lang('lang_v1.packing_slip') -->
 			</p>
 
 			</td>
@@ -163,12 +160,7 @@ img {
 <div class="row invoice-info">
 
 	<div class="col-md-6 invoice-col width-50 color-555">
-		
-		<!-- Logo -->
-		@if(!empty($receipt_details->logo))
-			<img style="max-height: 120px; width: auto;" src="{{$receipt_details->logo}}" class="img">
-			<br/>
-		@endif
+
 
 		<!-- Shop & Location Name  -->
 		@if(!empty($receipt_details->display_name))
@@ -201,26 +193,6 @@ img {
 		@endif
 	</div>
 
-	<div class="col-md-6 invoice-col width-50">
-
-		<p class="text-right font-30">
-			@if(!empty($receipt_details->invoice_no_prefix))
-				<span class="pull-left">{!! $receipt_details->invoice_no_prefix !!}</span>
-			@endif
-
-			{{$receipt_details->invoice_no}}
-		</p>
-		<!-- Date-->
-		@if(!empty($receipt_details->date_label))
-			<p class="text-right font-23 color-555">
-				<span class="pull-left">
-					{{$receipt_details->date_label}}
-				</span>
-
-				{{$receipt_details->invoice_date}}
-			</p>
-		@endif
-	</div>
 </div>
 
 <div class="row invoice-info color-555">
@@ -253,29 +225,7 @@ img {
 			<strong>{{ $receipt_details->sales_person_label }}</strong> {{ $receipt_details->sales_person }}
 		@endif
 	</div>
-	<div class="col-md-6 invoice-col width-50 word-wrap">
-		<strong>@lang('lang_v1.shipping_address'):</strong><br>
-		{!! $receipt_details->shipping_address !!}
-		@if(!empty($receipt_details->shipping_custom_field_1_label))
-			<br><strong>{!!$receipt_details->shipping_custom_field_1_label!!} :</strong> {!!$receipt_details->shipping_custom_field_1_value ?? ''!!}
-		@endif
 
-		@if(!empty($receipt_details->shipping_custom_field_2_label))
-			<br><strong>{!!$receipt_details->shipping_custom_field_2_label!!}:</strong> {!!$receipt_details->shipping_custom_field_2_value ?? ''!!}
-		@endif
-
-		@if(!empty($receipt_details->shipping_custom_field_3_label))
-			<br><strong>{!!$receipt_details->shipping_custom_field_3_label!!}:</strong> {!!$receipt_details->shipping_custom_field_3_value ?? ''!!}
-		@endif
-
-		@if(!empty($receipt_details->shipping_custom_field_4_label))
-			<br><strong>{!!$receipt_details->shipping_custom_field_4_label!!}:</strong> {!!$receipt_details->shipping_custom_field_4_value ?? ''!!}
-		@endif
-
-		@if(!empty($receipt_details->shipping_custom_field_5_label))
-			<br><strong>{!!$receipt_details->shipping_custom_field_2_label!!}:</strong> {!!$receipt_details->shipping_custom_field_5_value ?? ''!!}
-		@endif
-	</div>
 </div>
 
 <div class="row color-555">
@@ -349,11 +299,7 @@ img {
 	</div>
 </div>
 
-<div class="row invoice-info color-555" style="page-break-inside: avoid !important">
-	<div class="col-md-6 invoice-col width-50">
-		<b class="pull-left">@lang('lang_v1.authorized_signatory')</b>
-	</div>
-</div>
+
 
 {{-- Barcode --}}
 @if($receipt_details->show_barcode)
@@ -365,13 +311,7 @@ img {
 </div>
 @endif
 
-@if(!empty($receipt_details->footer_text))
-	<div class="row color-555">
-		<div class="col-xs-12">
-			{!! $receipt_details->footer_text !!}
-		</div>
-	</div>
-@endif
+
 
 			</td>
 		</tr>

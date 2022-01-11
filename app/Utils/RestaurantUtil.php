@@ -41,7 +41,7 @@ class RestaurantUtil extends Util
                 ->where('transactions.type', 'sell')
                 ->where('transactions.status', 'final');
         // ->where('transactions.res_order_status', '!=' ,'served');
-
+                    
         if (empty($filter['order_status'])) {
             $query->where(function ($q) {
                 $q->where('res_order_status', '!=', 'served')
@@ -74,6 +74,16 @@ class RestaurantUtil extends Util
         if (!empty($filter['transactions_id'])) {
             $query->where('transactions.id', $filter['transactions_id']);
         }
+        if (!empty($filter['location_id']) && $filter['location_id'] != 'all') {
+            $query->whereHas('sell_lines', function($q) use ($filter){
+               $q->whereHas('product',function($q) use ($filter){
+                $q->whereHas('product_locations',function($q) use ($filter){
+                    
+                    $q->whereIn('id',$filter['location_id']);
+                 }, '>=', 1);
+               }, '>=', 1);
+            }, '>=', 1);
+        }
         if (!empty($filter['waiter_id'])) {
             $query->where('transactions.res_waiter_id', $filter['waiter_id']);
         }
@@ -84,12 +94,11 @@ class RestaurantUtil extends Util
             'bl.name as business_location',
             'rt.name as table_name'
         )->with(['sell_lines'])
-                ->orderBy('created_at', 'desc');
+                ->orderBy('created_at', 'asc');
         if(!empty($filter['single'])){
           $orders = $query->first();
         }else{
           $orders = $query->get();
-
         }      
         return $orders;
     }
@@ -140,6 +149,7 @@ class RestaurantUtil extends Util
                 ->leftJoin('contacts as c', 't.contact_id', '=', 'c.id')
                 ->leftJoin('variations as v', 'transaction_sell_lines.variation_id', '=', 'v.id')
                 ->leftJoin('products as p', 'v.product_id', '=', 'p.id')
+                ->Join('product_locations', 'p.id', '=', 'product_locations.product_id')
                 ->leftJoin('units as u', 'p.unit_id', '=', 'u.id')
                 ->leftJoin('product_variations as pv', 'v.product_variation_id', '=', 'pv.id')
                 ->leftJoin('users as line_service_staff', 'transaction_sell_lines.res_service_staff_id', '=', 'line_service_staff.id')
@@ -172,12 +182,16 @@ class RestaurantUtil extends Util
         if (!empty($filter['line_id'])) {
             $query->where('transaction_sell_lines.id', $filter['line_id']);
         }
+        if (!empty($filter['location_id']) && $filter['location_id'] != 'all') {
+            $query->whereIn('product_locations.location_id', $filter['location_id']);
+        }
         if (!empty($filter['transaction_id'])) {
             $query->where('transaction_sell_lines.transaction_id', $filter['transaction_id']);
         }
         $orders =  $query->select(
             'p.name as product_name',
             'p.type as product_type',
+            'product_locations.location_id as product_location',
             'v.name as variation_name',
             'pv.name as product_variation_name',
             't.id as transaction_id',

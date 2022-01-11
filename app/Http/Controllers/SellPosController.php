@@ -434,11 +434,9 @@ class SellPosController extends Controller
                 $input['document'] = $this->transactionUtil->uploadFile($request, 'sell_document', 'documents');
 
                 $transaction = $this->transactionUtil->createSellTransaction($business_id, $input, $invoice_total, $user_id);
-
                 //Upload Shipping documents
                 Media::uploadMedia($business_id, $transaction, $request, 'shipping_documents', false, 'shipping_document');
                 
-
                 $this->transactionUtil->createOrUpdateSellLines($transaction, $input['products'], $input['location_id']);
                 
                 if (!$is_direct_sale) {
@@ -508,6 +506,7 @@ class SellPosController extends Controller
                     $business = ['id' => $business_id,
                                     'accounting_method' => $request->session()->get('business.accounting_method'),
                                     'location_id' => $input['location_id'],
+                                    'product_id' => $input['location_id'],
                                     'pos_settings' => $pos_settings
                                 ];
                     $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');

@@ -2883,15 +2883,17 @@ class TransactionUtil extends Util
             
             //Get purchase lines, only for products with enable stock.
             $query = Transaction::join('purchase_lines AS PL', 'transactions.id', '=', 'PL.transaction_id')
-                ->where('transactions.business_id', $business['id'])
-                ->where('transactions.location_id', $business['location_id'])
                 ->whereIn('transactions.type', ['purchase', 'purchase_transfer',
                     'opening_stock', 'production_purchase'])
                 ->where('transactions.status', 'received')
                 ->whereRaw("( $qty_sum_query ) < PL.quantity")
                 ->where('PL.product_id', $line->product_id)
                 ->where('PL.variation_id', $line->variation_id);
-
+            if (!empty($business['product_id'])) {
+                $query->where('transactions.location_id', $product->product_locations->first()->id);
+            }else{
+                $query->where('transactions.business_id', $business['id']);
+            }
             //If product expiry is enabled then check for on expiry conditions
             if ($stop_selling_expired && empty($purchase_line_id)) {
                 $stop_before = request()->session()->get('business')['stop_selling_before'];
@@ -2932,7 +2934,9 @@ class TransactionUtil extends Util
 
             //Iterate over the rows, assign the purchase line to sell lines.
             $qty_selling = $line->quantity;
+
             foreach ($rows as $k => $row) {
+
                 $qty_allocated = 0;
 
                 //Check if qty_available is more or equal
@@ -3012,7 +3016,6 @@ class TransactionUtil extends Util
                             "messages.purchase_sell_mismatch_exception",
                             ['product' => $mismatch_name]
                         );
-
                         if ($stop_selling_expired) {
                             $mismatch_error .= __('lang_v1.available_stock_expired');
                         }
