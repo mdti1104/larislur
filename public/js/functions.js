@@ -393,10 +393,9 @@ function __print_receipt(section_id = null) {
     } else {
         setTimeout(function() {
             window.print();
-
-            // setTimeout(function() {
-            //     $('#receipt_section').html('');
-            // }, 5000);
+            setTimeout(function() {
+                $('#receipt_section').html('');
+            }, 5000);
             
         }, 1000);
     }

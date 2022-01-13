@@ -2658,6 +2658,36 @@ class SellPosController extends Controller
      * download pdf for given transaction
      *
      */
+    public function PrintRegister()
+    {
+        if (!auth()->user()->can('view_cash_register')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = request()->session()->get('user.business_id');
+        
+        $register_details =  $this->cashRegisterUtil->getRegisterDetails();
+
+        $user_id = auth()->user()->id;
+        $open_time = $register_details['open_time'];
+        $close_time = \Carbon::now()->toDateTimeString();
+
+        $is_types_of_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
+
+        $details = $this->cashRegisterUtil->getRegisterTransactionDetails($user_id, $open_time, $close_time, $is_types_of_service_enabled);
+            $output = ['is_enabled' => true,
+            'print_type' => 'browser',
+            'html_content' => null,
+            'printer_config' => [],
+            'data' => []
+        ];
+        $payment_types = $this->cashRegisterUtil->payment_types($register_details->location_id, true, $business_id);
+        $html_content = view('sale_pos.receipts.register_details')
+                ->with(compact('register_details', 'details', 'payment_types', 'close_time'))->render();
+        $output['html_content'] = $html_content;
+        $output['print_title'] = strtotime("now");
+        return $output;        
+    }
     public function downloadPdf($id)
     {   
         if (!(config('constants.enable_download_pdf') && auth()->user()->can("print_invoice"))) {

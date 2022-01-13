@@ -1980,7 +1980,21 @@ function round_row_to_iraqi_dinnar(row) {
         element.change();
     }
 }
-
+$(document).on('click','#register_print',function(){
+    $.ajax({
+        url: $(this).attr('href'),
+        success: function(result) {
+            $('#cash_register').html(result.html_content);
+            __currency_convert_recursively($('#cash_register'));
+            var newWin=window.open('','Print-Window');
+            newWin.document.open();
+            newWin.document.write('<html><head><style>#in {display:none}</style><body   onload="window.print()">'+$('#cash_register').html()+'</body></html>');
+            newWin.document.close();
+            window.close()
+            
+        },
+    });
+})
 function pos_print(receipt) {
     //If printer type then connect with websocket
     if (receipt.print_type == 'printer') {

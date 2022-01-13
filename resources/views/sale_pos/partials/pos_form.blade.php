@@ -1,5 +1,5 @@
 <div class="row">
-	<div class="col-md-4">
+	<div class="col-md-6">
 		<div class="form-group">
 			<div class="input-group">
 				<span class="input-group-addon">
@@ -25,27 +25,17 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-md-8">
+	<div class="col-md-4">
 		<div class="form-group">
 			<div class="input-group">
 				<div class="input-group-btn">
 					<button type="button" class="btn btn-default bg-white btn-flat" data-toggle="modal" data-target="#configure_search_modal" title="{{__('lang_v1.configure_product_search')}}"><i class="fas fa-search-plus"></i></button>
 				</div>
-				{!! Form::text('search_product', null, ['class' => 'form-control mousetrap', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder'),
+				{!! Form::text('search_product', null, ['class' => 'form-control', 'id' => 'search_product', 'placeholder' => 'Order No',
 				'disabled' => is_null($default_location)? true : false,
 				'autofocus' => false,
 				]); !!}
-				<span class="input-group-btn">
-
-					<!-- Show button for weighing scale modal -->
-					@if(isset($pos_settings['enable_weighing_scale']) && $pos_settings['enable_weighing_scale'] == 1)
-						<button type="button" class="btn btn-default bg-white btn-flat" id="weighing_scale_btn" data-toggle="modal" data-target="#weighing_scale_modal" 
-						title="@lang('lang_v1.weighing_scale')"><i class="fa fa-digital-tachograph text-primary fa-lg"></i></button>
-					@endif
-					
-
-					<button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product" data-href="{{action('ProductController@quickAdd')}}" data-container=".quick_add_product_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
-				</span>
+				
 			</div>
 		</div>
 	</div>
