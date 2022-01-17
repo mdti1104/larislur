@@ -565,6 +565,7 @@ class SellPosController extends Controller
                     $packingSlip = $this->receiptContent($business_id, $input['location_id'], $transaction->id, null, true, true, $invoice_layout_id);
                     $receipt['html_content'] .= $packingSlip['html_content'];
                 }
+               event(new \App\Events\SendNotifcation());
 
                 $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt ];
 

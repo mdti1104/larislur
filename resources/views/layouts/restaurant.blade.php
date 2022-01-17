@@ -64,9 +64,21 @@
             @include('layouts.partials.footer-restaurant')
 
         </div>
-
+        <audio id="success-audio" muted autoplay> 
+              <source src="{{ asset('/audio/success.ogg?v=' . $asset_v) }}" type="audio/ogg">
+              <source id="source-audio" src="{{ asset('/audio/success.mp3?v=' . $asset_v) }}" type="audio/mpeg">
+            </audio>
+            <audio id="error-audio">
+              <source src="{{ asset('/audio/error.ogg?v=' . $asset_v) }}" type="audio/ogg">
+              <source src="{{ asset('/audio/error.mp3?v=' . $asset_v) }}" type="audio/mpeg">
+            </audio>
+            <audio id="warning-audio">
+              <source src="{{ asset('/audio/warning.ogg?v=' . $asset_v) }}" type="audio/ogg">
+              <source src="{{ asset('/audio/warning.mp3?v=' . $asset_v) }}" type="audio/mpeg">
+            </audio>
         @include('layouts.partials.javascripts')
         <script src="{{ asset('js/restaurant.js?v=' . $asset_v) }}"></script>
+    
         <div class="modal fade view_modal" tabindex="-1" role="dialog" 
         aria-labelledby="gridSystemModalLabel"></div>
     </body>

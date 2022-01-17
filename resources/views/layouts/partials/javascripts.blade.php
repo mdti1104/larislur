@@ -22,7 +22,12 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js?v=$asset_v"></script>
 <![endif]-->
 <script src="{{ asset('js/vendor.js?v=' . $asset_v) }}"></script>
-
+<script>
+            window.laravel_echo_port='{{env("LARAVEL_ECHO_PORT")}}';
+    </script>
+    <script src="//{{ Request::getHost() }}:{{env('LARAVEL_ECHO_PORT')}}/socket.io/socket.io.js"></script>
+    <script src="{{ url('/js/laravel-echo-setup.js') }}" type="text/javascript"></script>
+    
 @if(file_exists(public_path('js/lang/' . session()->get('user.language', config('app.locale')) . '.js')))
     <script src="{{ asset('js/lang/' . session()->get('user.language', config('app.locale') ) . '.js?v=' . $asset_v) }}"></script>
 @else

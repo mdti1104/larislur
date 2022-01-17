@@ -141,7 +141,10 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/sells/pos/get-featured-products/{location_id}', 'SellPosController@getFeaturedProducts');
     Route::resource('pos', 'SellPosController');
     Route::get('/pos/cash-register/register-details', 'SellPosController@PrintRegister');
+    Route::get('/t',function(){
+        event(new \App\Events\SendNotifcation());
 
+    });
     Route::resource('roles', 'RoleController');
 
     Route::resource('users', 'ManageUserController');

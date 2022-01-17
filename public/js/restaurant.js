@@ -6,7 +6,12 @@ $(document).ready(function() {
         var location_id = $(this).val();
         getLocationTables(location_id);
     });
+    window.Echo.channel('larislur_database_kitchen-channel')
+    .listen('.KitchenEvent', (data) => {
+        toastr.success("pesanan baru");
+        refresh_orders();
 
+    });
     $(document).on('click', 'button.add_modifier', function() {
         var checkbox = $(this)
             .closest('div.modal-content')
