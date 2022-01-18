@@ -395,15 +395,24 @@ class CashRegisterUtil extends Util
                 ->whereBetween('transactions.created_at', [$open_time, $close_time])
                 ->where('transactions.type', 'sell')
                 ->where('transactions.is_direct_sale', 0)
+                ->leftjoin(
+                    'transactions AS SR',
+                    'transactions.id',
+                    '=',
+                    'SR.return_parent_id'
+                )
                 ->where('transactions.status', 'final')
                 ->select(
-                    DB::raw('SUM(tax_amount) as total_tax'),
-                    DB::raw('SUM(IF(discount_type = "percentage", total_before_tax*discount_amount/100, discount_amount)) as total_discount'),
-                    DB::raw('SUM(final_total) as total_sales'),
-                    DB::raw('SUM(shipping_charges) as total_shipping_charges')
+                    DB::raw('SUM(transactions.tax_amount) as total_tax'),
+                    DB::raw('SUM(IF(transactions.discount_type = "percentage", transactions.total_before_tax*transactions.discount_amount/100, transactions.discount_amount)) as total_discount'),
+                    DB::raw("SUM(transactions.final_total - COALESCE(SR.final_total, 0) ) as total_sales"),
+                    DB::raw('SUM(SR.final_total) as amount_return'),
+                    DB::raw('sum(case when SR.return_parent_id is null then 1 else 0 end) as paid_transactions'),
+                    DB::raw('SUM(transactions.final_total - COALESCE(SR.final_total, 0))  /  sum(case when SR.return_parent_id is null then 1 else 0 end) as apc'),
+                    DB::raw('SUM(transactions.shipping_charges) as total_shipping_charges')
+                    
                 )
                 ->first();
-
         return ['product_group_category' => $product_group_category,
                 'transaction_details' => $transaction_details,
                 'product_group_name' => $product_group_name,

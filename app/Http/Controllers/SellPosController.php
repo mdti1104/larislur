@@ -2674,7 +2674,7 @@ class SellPosController extends Controller
         $close_time = \Carbon::now()->toDateTimeString();
 
         $is_types_of_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
-
+        
         $details = $this->cashRegisterUtil->getRegisterTransactionDetails($user_id, $open_time, $close_time, $is_types_of_service_enabled);
             $output = ['is_enabled' => true,
             'print_type' => 'browser',
