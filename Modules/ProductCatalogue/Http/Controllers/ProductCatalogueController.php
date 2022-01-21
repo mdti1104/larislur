@@ -142,38 +142,9 @@ class ProductCatalogueController extends Controller
     }
     public function success(Request $request)
     {
-     
-            $max = DB::table('orders_catalog')->orderBy('orders_id','DESC')->first();
-        if ($max) {
-                $order_no = $this->generateOrderNo($max->orders_id + 1);
-        }else{
-                $order_no = $this->generateOrderNo(1);
-        }
-        $cart = $request->session()->get('cart');
-        $order_id = DB::table('orders_catalog')->insertGetId([
-                'order_no' => $order_no,
-                'session_id' => session()->getId(),
-            ]);
-            $carts = $this->CartMapping($cart);
-            foreach ($carts['cart'] as $key => $value) {
-            if ($value['variant']) {
-                $data = [
-                    'id_product' => $value['id_product'],
-                    'id_orders' => $order_id,
-                    'variation_id' => $value['id'],
-                    'quantity' => $value['quantity'],
-                ];
-            }else{
-                $data = [
-                    'id_product' => $value['id'],
-                    'id_orders' => $order_id,
-                    'quantity' => $value['quantity'],
-                    'variation_id' => null
-                ];
-            }
-            DB::table('product_orders')->insert($data);
-            }
-        return view('productcatalogue::catalogue.success',compact('order_no'));
+  
+
+        return view('productcatalogue::catalogue.success');
 
     }
     public function generateOrderNo($string)
