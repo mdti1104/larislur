@@ -63,7 +63,6 @@ class ProductCatalogueController extends Controller
                                 ->get();
 
         $categories = Category::forDropdown($business_id, 'product');
-
         return view('productcatalogue::catalogue.index')->with(compact('products', 'business', 'discounts', 'business_location', 'categories'));
     }
 
@@ -98,7 +97,6 @@ class ProductCatalogueController extends Controller
         if ($product->type == 'combo') {
             $combo_variations = $this->productUtil->__getComboProductDetails($product['variations'][0]->combo_variations, $product->business_id);
         }
-
         return view('productcatalogue::catalogue.show')->with(compact(
             'product',
             'allowed_group_prices',
@@ -125,21 +123,21 @@ class ProductCatalogueController extends Controller
     public function all($business_id)
     {
         
-        $categories = Category::where('business_id',$business_id)->where('category_type', 'product')
-        ->get();
+        $paginator  = Category::where('business_id',$business_id)->where('category_type', 'product')
+        ->paginate(4);
 
-        return view('productcatalogue::catalogue.index')->with(compact('categories','business_id'));
+        return view('productcatalogue::catalogue.index')->with(compact('paginator','business_id'));
     }
     public function Category($business_id,$categories_id)
     {
-        $products = Product::where('business_id', $business_id)
+        $paginator = Product::where('business_id', $business_id)
         ->ProductForSales()
-        ->with(['variations', 'variations.product_variation', 'category'])
+        ->with(['variations', 'modifier_sets','variations.product_variation', 'category'])
         ->where('type','!=','modifier')
         ->where('category_id',$categories_id)
-        ->get();
+        ->paginate(4);
         $categories = Category::forDropdown($business_id, 'product');
-        return view('productcatalogue::catalogue.menu')->with(compact('products','categories_id','categories','business_id'));
+        return view('productcatalogue::catalogue.menu')->with(compact('paginator','categories_id','categories','business_id'));
 
     }
     public function success(Request $request)
@@ -245,7 +243,6 @@ class ProductCatalogueController extends Controller
 
         $cart = $request->session()->get('cart');
         $mapp = $this->CartMapping($cart);
-        
         return view('productcatalogue::catalogue.cart',$mapp);
     }
     public function add_cart(Request $request)

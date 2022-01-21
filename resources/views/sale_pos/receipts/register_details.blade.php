@@ -15,7 +15,8 @@
                 <b>@lang('report.user'):</b> {{ $register_details->user_name}}<br>
                 <b>@lang('business.email'):</b> {{ $register_details->email}}<br>
                 <b>@lang('business.business_location'):</b> {{ $register_details->location_name}}<br>
-                <b>APC:</b> {{ number_format($details['transaction_details']->apc,0,',','.')}}<br>
+                <b>Date:</b> {{ $open_time}} - {{ $close_time}}<br>
+                <b>APC:</b>Rp. {{ number_format($details['transaction_details']->apc,0,',','.')}}<br>
             </div>
             @if(!empty($register_details->closing_note))
             <div class="col-xs-6">
@@ -43,7 +44,7 @@
             </tr>
             <tr>
                 <td>
-                    @lang('cash_register.cash_in_hand'):
+                Cash in Drawer / Capital:
                 </td>
                 <td>
                     <span class="display_currency"

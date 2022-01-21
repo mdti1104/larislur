@@ -397,7 +397,10 @@ Route::middleware(['EcomApi'])->prefix('api/ecom')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 });
-
+Route::get('/t', function () {
+    event(new \App\Events\SendNotifcation([7,6]));
+    
+});
 Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])->group(function () {
     Route::get('/load-more-notifications', 'HomeController@loadMoreNotifications');
     Route::get('/get-total-unread', 'HomeController@getTotalUnreadNotifications');

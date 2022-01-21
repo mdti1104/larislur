@@ -456,7 +456,8 @@ class SellPosController extends Controller
                 //Check for final and do some processing.
                 if ($input['status'] == 'final') {
                     //update product stock
-                    foreach ($input['products'] as $product) {
+                    $product_location = [];
+                    foreach ($input['products'] as $key => $product) {
                         $decrease_qty = $this->productUtil
                                     ->num_uf($product['quantity']);
                         if (!empty($product['base_unit_multiplier'])) {
@@ -474,14 +475,19 @@ class SellPosController extends Controller
 
                         if ($product['product_type'] == 'combo') {
                             //Decrease quantity of combo as well.
+                            foreach ($product['combo'] as $value) {
+                                $product_location[] =$value['product_locations'];
+                            }
                             $this->productUtil
                                 ->decreaseProductQuantityCombo(
                                     $product['combo'],
                                     $input['location_id']
                                 );
+                        }else{
+                            $product_location[] =$product['location_id'];
                         }
                     }
-
+                    event(new \App\Events\SendNotifcation($product_location));
                     //Add payments to Cash Register
                     if (!$is_direct_sale && !$transaction->is_suspend && !empty($input['payment']) && !$is_credit_sale) {
                         $this->cashRegisterUtil->addSellPayments($transaction, $input['payment']);
@@ -565,7 +571,6 @@ class SellPosController extends Controller
                     $packingSlip = $this->receiptContent($business_id, $input['location_id'], $transaction->id, null, true, true, $invoice_layout_id);
                     $receipt['html_content'] .= $packingSlip['html_content'];
                 }
-               event(new \App\Events\SendNotifcation());
 
                 $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt ];
 
@@ -578,6 +583,7 @@ class SellPosController extends Controller
                         ];
             }
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
             $msg = trans("messages.something_went_wrong");
@@ -1490,6 +1496,7 @@ class SellPosController extends Controller
             }
 
             $output = $this->getSellLineRow($variation_id, null, $quantity, $row_count, $is_direct_sell);
+            
             if ($this->transactionUtil->isModuleEnabled('modifiers')  && !$is_direct_sell) {
                 $variation = Variation::find($variation_id);
                 $business_id = request()->session()->get('user.business_id');
@@ -1497,6 +1504,7 @@ class SellPosController extends Controller
                                         ->with(['modifier_sets'])
                                         ->find($variation->product_id);
                 if (count($this_product->modifier_sets) > 0) {
+
                     $product_ms = $this_product->modifier_sets;
                     $output['html_modifier'] =  view('restaurant.product_modifier_set.modifier_for_product')
                     ->with(compact('product_ms', 'row_count'))->render();
@@ -1582,14 +1590,16 @@ class SellPosController extends Controller
         } else {
             $query->where('transactions.sub_type', null);
         }
-
+        $register_details =  $this->cashRegisterUtil->getRegisterDetails();
+        $open_time = $register_details['open_time'];
+        $close_time = \Carbon::now()->toDateTimeString();
         $transactions = $query->orderBy('transactions.created_at', 'desc')
+                          ->whereBetween('transactions.created_at', [$open_time, $close_time])
                             ->groupBy('transactions.id')
                             ->select('transactions.*')
                             ->with(['contact', 'table'])
                             ->limit(10)
                             ->get();
-
         return view('sale_pos.partials.recent_transactions')
             ->with(compact('transactions', 'transaction_sub_type'));
     }
@@ -2684,10 +2694,10 @@ class SellPosController extends Controller
         ];
         $payment_types = $this->cashRegisterUtil->payment_types($register_details->location_id, true, $business_id);
         $html_content = view('sale_pos.receipts.register_details')
-                ->with(compact('register_details', 'details', 'payment_types', 'close_time'))->render();
+                ->with(compact('register_details', 'details', 'open_time','close_time','payment_types', 'close_time'))->render();
         $output['html_content'] = $html_content;
         $output['print_title'] = strtotime("now");
-        return $output;        
+        return $html_content;        
     }
     public function downloadPdf($id)
     {   

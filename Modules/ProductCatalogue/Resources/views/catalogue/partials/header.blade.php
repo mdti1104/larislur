@@ -11,7 +11,7 @@
                     <div class="container">
                         <div class="header-container fl-wrap">
                             <a href="index.html" class="logo-holder ajax"><img src="{{ asset('catalogue/images/logo.png')}}" alt=""></a>
-                            <div class="show-cart sc_btn htact"><i class="fal fa-shopping-bag"></i><span class="show-cart_count">3</span><span class="header-tooltip">Your Cart</span></div>
+                            <a href="/cart" class="show-cart htact"><i class="fal fa-shopping-bag"></i><span class="header-tooltip">Your Cart</span></a>
                             <!-- nav-button-wrap-->
                             <div class="nav-button-wrap">
                                 <div class="nav-button">

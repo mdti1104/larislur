@@ -8,8 +8,16 @@ $(document).ready(function() {
     });
     window.Echo.channel('larislur_database_kitchen-channel')
     .listen('.KitchenEvent', (data) => {
-        toastr.success("pesanan baru");
-        refresh_orders();
+        // toastr.success("pesanan baru");
+       var locations = $('meta[name="auth_locations"]').attr('content');
+       var is_kitchen = $('meta[name="is_kitchen"]').attr('content');
+        JSON.parse(locations).forEach(element => {
+            if(data.product_location.indexOf(element) && is_kitchen){
+                toastr.success('Pesanan baru');
+                refresh_orders();
+                break;
+            }
+        });
 
     });
     $(document).on('click', 'button.add_modifier', function() {

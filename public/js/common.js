@@ -52,6 +52,7 @@ $(document).ready(function() {
     toastr.options.onShown = function() {
         if ($(this).hasClass('toast-success')) {
             var audio = $('#success-audio')[0];
+            console.log(audio)
             if (audio !== undefined) {
                 audio.play();
             }

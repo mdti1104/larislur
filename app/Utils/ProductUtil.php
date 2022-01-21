@@ -479,13 +479,14 @@ class ProductUtil extends Util
                             ->orWhere('vld.location_id', $location_id);
             });
         }
-        
+
         $product = $query->select(
             DB::raw("IF(pv.is_dummy = 0, CONCAT(p.name, 
                     ' (', pv.name, ':',variations.name, ')'), p.name) AS product_name"),
             'p.id as product_id',
             'p.brand_id',
             'p.category_id',
+            'vld.location_id as product_location',
             'p.tax as tax_id',
             'p.enable_stock',
             'p.enable_sr_no',
@@ -518,7 +519,6 @@ class ProductUtil extends Util
             
             $product->combo_products = $this->calculateComboDetails($location_id, $product->combo_variations);
         }
-        
         return $product;
     }
 
@@ -577,23 +577,20 @@ class ProductUtil extends Util
         $details = [];
 
         foreach ($combo_variations as $key => $value) {
-            $variation = Variation::with(['product', 'variation_location_details' => function($q) use ($location_id){
-                $q->where('location_id', $location_id);
-            }])->findOrFail($value['variation_id']);
+            $variation = Variation::with(['product', 'variation_location_details'])->findOrFail($value['variation_id']);
 
             $vld = $variation->variation_location_details->first();
-
             $variation_qty = !empty($vld) ? $vld->qty_available : 0;
             $multiplier = $this->getMultiplierOf2Units($variation->product->unit_id, $value['unit_id']);
 
             $details[] = [
               'variation_id' => $value['variation_id'],
               'product_id' => $variation->product_id,
+              'variation_location_details' => $vld['location_id'],
               'qty_required' => $this->num_uf($value['quantity']) * $multiplier,
               'enable_stock' => $variation->product->enable_stock
             ];
         }
-
         return $details;
     }
 

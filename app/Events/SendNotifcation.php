@@ -12,16 +12,16 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 class SendNotifcation implements ShouldBroadcastNow
 {
     use InteractsWithSockets, SerializesModels;
-    public $data = ['asas'];
+    public $data;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($product)
     {
-        //
+        $this->data = $product;
     }
 
     /**
@@ -39,6 +39,6 @@ class SendNotifcation implements ShouldBroadcastNow
     }
     public function broadcastWith()
     {
-        return ['title'=>'This notification from ItSolutionStuff.com'];
+        return ['product_location' => $this->data];
     }
 }

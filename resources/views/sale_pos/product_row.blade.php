@@ -228,7 +228,8 @@
 		>
 		<span class="input-group-btn"><button type="button" class="btn btn-default btn-flat quantity-up"><i class="fa fa-plus text-success"></i></button></span>
 		</div>
-		
+		<input type="hidden" name="products[{{$row_count}}][location_id]" value="{{$product->product_location}}">
+
 		<input type="hidden" name="products[{{$row_count}}][product_unit_id]" value="{{$product->unit_id}}">
 		@if(count($sub_units) > 0)
 			<br>
@@ -267,7 +268,9 @@
 				<input type="hidden" 
 					name="products[{{$row_count}}][combo][{{$k}}][product_id]"
 					value="{{$combo_product['product_id']}}">
-
+					<input type="hidden" 
+					name="products[{{$row_count}}][combo][{{$k}}][product_locations]"
+					value="{{$combo_product['variation_location_details']}}">
 					<input type="hidden" 
 					name="products[{{$row_count}}][combo][{{$k}}][variation_id]"
 					value="{{$combo_product['variation_id']}}">
