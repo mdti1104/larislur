@@ -124,24 +124,23 @@ class ProductCatalogueController extends Controller
     }
     public function all($business_id)
     {
+        
+        $categories = Category::where('business_id',$business_id)->where('category_type', 'product')
+        ->get();
+
+        return view('productcatalogue::catalogue.index')->with(compact('categories','business_id'));
+    }
+    public function Category($business_id,$categories_id)
+    {
         $products = Product::where('business_id', $business_id)
         ->ProductForSales()
         ->with(['variations', 'variations.product_variation', 'category'])
         ->where('type','!=','modifier')
-        ->get()
-        ->groupBy('category_id');
-        $business = Business::with(['currency'])->findOrFail($business_id);
-        $business_location = BusinessLocation::where('business_id', $business_id)->first();
-        $now = \Carbon::now()->toDateTimeString();
-        $discounts = Discount::where('business_id', $business_id)
-                                ->where('is_active', 1)
-                                ->where('starts_at', '<=', $now)
-                                ->where('ends_at', '>=', $now)
-                                ->orderBy('priority', 'desc')
-                                ->get();
-
+        ->where('category_id',$categories_id)
+        ->get();
         $categories = Category::forDropdown($business_id, 'product');
-        return view('productcatalogue::catalogue.index')->with(compact('products', 'business', 'discounts', 'business_location', 'categories'));
+        return view('productcatalogue::catalogue.menu')->with(compact('products','categories_id','categories','business_id'));
+
     }
     public function success(Request $request)
     {

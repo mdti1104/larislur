@@ -323,7 +323,24 @@ class CashRegisterUtil extends Util
      */
     public function getRegisterTransactionDetails($user_id, $open_time, $close_time, $is_types_of_service_enabled = false)
     {
-        $product_details = Transaction::where('transactions.created_by', $user_id)
+        $product_group_category = Transaction::where('transactions.created_by', $user_id)
+                ->whereBetween('transactions.created_at', [$open_time, $close_time])
+                ->where('transactions.type', 'sell')
+                ->where('transactions.status', 'final')
+                ->where('transactions.is_direct_sale', 0)
+                ->join('transaction_sell_lines AS TSL', 'transactions.id', '=', 'TSL.transaction_id')
+                ->join('products AS P', 'TSL.product_id', '=', 'P.id')
+                ->leftjoin('categories AS C', 'C.id', '=', 'P.category_id')
+                ->leftjoin('brands AS B', 'P.brand_id', '=', 'B.id')
+                ->groupBy('C.id')
+                ->select(
+                    'C.name as category_name',
+                    DB::raw('SUM(TSL.quantity) as total_quantity'),
+                    DB::raw('SUM(TSL.unit_price_inc_tax*TSL.quantity) as total_amount')
+                )
+                ->orderByRaw('CASE WHEN category_name IS NULL THEN 2 ELSE 1 END, category_name')
+                ->get();
+                $product_group_name = Transaction::where('transactions.created_by', $user_id)
                 ->whereBetween('transactions.created_at', [$open_time, $close_time])
                 ->where('transactions.type', 'sell')
                 ->where('transactions.status', 'final')
@@ -331,15 +348,31 @@ class CashRegisterUtil extends Util
                 ->join('transaction_sell_lines AS TSL', 'transactions.id', '=', 'TSL.transaction_id')
                 ->join('products AS P', 'TSL.product_id', '=', 'P.id')
                 ->leftjoin('brands AS B', 'P.brand_id', '=', 'B.id')
-                ->groupBy('B.id')
+                ->groupBy('P.id')
                 ->select(
-                    'B.name as brand_name',
+                    'P.name as product_name',
                     DB::raw('SUM(TSL.quantity) as total_quantity'),
                     DB::raw('SUM(TSL.unit_price_inc_tax*TSL.quantity) as total_amount')
                 )
-                ->orderByRaw('CASE WHEN brand_name IS NULL THEN 2 ELSE 1 END, brand_name')
+                ->orderByRaw('CASE WHEN product_name IS NULL THEN 2 ELSE 1 END, product_name')
                 ->get();
-
+                $product_group_location = Transaction::where('transactions.created_by', $user_id)
+                ->whereBetween('transactions.created_at', [$open_time, $close_time])
+                ->where('transactions.type', 'sell')
+                ->where('transactions.status', 'final')
+                ->where('transactions.is_direct_sale', 0)
+                ->join('transaction_sell_lines AS TSL', 'transactions.id', '=', 'TSL.transaction_id')
+                ->join('products AS P', 'TSL.product_id', '=', 'P.id')
+                ->join('product_locations AS PL', 'PL.product_id', '=', 'P.id')
+                ->join('business_locations AS BL', 'PL.location_id', '=', 'BL.id')
+                ->groupBy('BL.id')
+                ->select(
+                    'BL.name as location_name',
+                    DB::raw('SUM(TSL.quantity) as total_quantity'),
+                    DB::raw('SUM(TSL.unit_price_inc_tax*TSL.quantity) as total_amount')
+                )
+                ->orderByRaw('CASE WHEN location_name IS NULL THEN 2 ELSE 1 END, location_name')
+                ->get();
         //If types of service
         $types_of_service_details = null;
         if ($is_types_of_service_enabled) {
@@ -371,8 +404,11 @@ class CashRegisterUtil extends Util
                 )
                 ->first();
 
-        return ['product_details' => $product_details,
+        return ['product_group_category' => $product_group_category,
                 'transaction_details' => $transaction_details,
+                'product_group_name' => $product_group_name,
+                'product_details' => $product_group_name,
+                'product_group_location' => $product_group_location,
                 'types_of_service_details' => $types_of_service_details
             ];
     }

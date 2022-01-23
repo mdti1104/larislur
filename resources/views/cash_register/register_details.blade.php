@@ -69,9 +69,11 @@
     </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-primary no-print" 
+      <button type="button" class="btn btn-primary" 
         aria-label="Print" 
-          onclick="$(this).closest('div.modal').printThis();">
+        href="{{action('SellPosController@PrintRegister')}}"
+        id="register_print"
+      >
         <i class="fa fa-print"></i> @lang( 'messages.print' )
       </button>
 
