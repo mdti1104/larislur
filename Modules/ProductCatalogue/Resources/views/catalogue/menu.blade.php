@@ -214,7 +214,7 @@
                  
                     $.ajax({
                         type:'POST',
-                        url:'/add_cart/',
+                        url:'<?php echo route('add.cart')?>',
                         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                         data:{
                             'id_product' : id,
