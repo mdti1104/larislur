@@ -15,8 +15,8 @@ Route::group(['namespace' => '\Modules\ProductCatalogue\Http\Controllers'], func
 	Route::get('/catalogue/{business_id}/{location_id}', 'ProductCatalogueController@index');
 	Route::get('/catalogue/{business_id}/', 'ProductCatalogueController@all');
 	Route::get('/catalogue/category/{business_id}/{category}', 'ProductCatalogueController@Category');
-	Route::post('/add_cart', 'ProductCatalogueController@add_cart');
-	Route::get('/cart', 'ProductCatalogueController@cart')->name('add.cart');
+	Route::post('/add_cart', 'ProductCatalogueController@add_cart')->name('add.cart');
+	Route::get('/cart', 'ProductCatalogueController@cart');
 	Route::get('/cart/delete/{id}', 'ProductCatalogueController@DestroyCart');
 	Route::get('/order_number/{order_no}', 'ProductCatalogueController@getOrderNumber');
 	Route::get('/success', 'ProductCatalogueController@success');
