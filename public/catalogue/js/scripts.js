@@ -602,6 +602,7 @@ function initRestabook() {
         resize2 = false;
     }
     function showResForm() {
+        
         $(".reservation-modal-wrap").fadeIn(1);
         transitionLayer3.addClass('visible opening');
         $("html, body").addClass("hid-body");

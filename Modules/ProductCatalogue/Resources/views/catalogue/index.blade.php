@@ -4,7 +4,7 @@
         <head>
         <!--=============== basic  ===============-->
         <meta charset="UTF-8">
-        <title>Kokuja -   Responsive Restaurant / Cafe / Pub Template</title>
+        <title>Kokuja</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <meta name="robots" content="index, follow"/>
         <meta name="keywords" content=""/>
@@ -67,7 +67,7 @@
                                         <!-- gallery start -->
                                         <div class="gallery-items grid-big-pad  lightgallery two-column fl-wrap">
                                              <!-- gallery-item-->
-                                        @foreach($categories as $categories)
+                                        @foreach($paginator  as $categories)
 
                                              <div class="gallery-item desserts">
                                                 <div class="grid-item-holder hov_zoom">
@@ -86,8 +86,11 @@
                                         @endforeach
 
                                         </div>
+                                        {{ $paginator->links('productcatalogue::catalogue.partials.pagination') }}
+
                                         <!-- gallery end -->                                
-                                                                            
+                                 
+                  
                                     </div>
                                 </div>
                             
@@ -271,5 +274,8 @@
         <script src="{{ asset('catalogue/js/jquery.min.js')}}"></script>
         <script src="{{ asset('catalogue/js/plugins.js')}}"></script>
         <script src="{{ asset('catalogue/js/scripts.js')}}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jStorage/0.4.12/jstorage.min.js"></script>
+
+        <script src="{{ asset('js/cesta-feira.min.js')}}"></script>
     </body>
 </html>

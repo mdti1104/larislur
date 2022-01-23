@@ -456,7 +456,8 @@ class SellPosController extends Controller
                 //Check for final and do some processing.
                 if ($input['status'] == 'final') {
                     //update product stock
-                    foreach ($input['products'] as $product) {
+                    $product_location = [];
+                    foreach ($input['products'] as $key => $product) {
                         $decrease_qty = $this->productUtil
                                     ->num_uf($product['quantity']);
                         if (!empty($product['base_unit_multiplier'])) {
@@ -474,14 +475,19 @@ class SellPosController extends Controller
 
                         if ($product['product_type'] == 'combo') {
                             //Decrease quantity of combo as well.
+                            foreach ($product['combo'] as $value) {
+                                $product_location[] =$value['product_locations'];
+                            }
                             $this->productUtil
                                 ->decreaseProductQuantityCombo(
                                     $product['combo'],
                                     $input['location_id']
                                 );
+                        }else{
+                            $product_location[] =$product['location_id'];
                         }
                     }
-
+                    event(new \App\Events\SendNotifcation($product_location));
                     //Add payments to Cash Register
                     if (!$is_direct_sale && !$transaction->is_suspend && !empty($input['payment']) && !$is_credit_sale) {
                         $this->cashRegisterUtil->addSellPayments($transaction, $input['payment']);
@@ -572,6 +578,7 @@ class SellPosController extends Controller
                     $output['whatsapp_link'] = $whatsapp_link;
                 }
             } else {
+
                 $output = ['success' => 0,
                             'msg' => trans("messages.something_went_wrong")
                         ];
@@ -777,9 +784,9 @@ class SellPosController extends Controller
                             '=',
                             'pv.id'
                         )
-                        ->leftjoin('variation_location_details AS vld', function ($join) use ($location_id) {
-                            $join->on('variations.id', '=', 'vld.variation_id')
-                                ->where('vld.location_id', '=', $location_id);
+                        ->leftjoin('variation_location_details AS vld',function ($join) use ($location_id) {
+                            $join->on('variations.id', '=', 'VLD.variation_id');
+                            
                         })
                         ->leftjoin('units', 'units.id', '=', 'p.unit_id')
                         ->where('transaction_sell_lines.transaction_id', $id)
@@ -797,6 +804,7 @@ class SellPosController extends Controller
                             'p.barcode_type',
                             'p.enable_sr_no',
                             'variations.id as variation_id',
+                            'vld.location_id as location_id',
                             'units.short_name as unit',
                             'units.allow_decimal as unit_allow_decimal',
                             'transaction_sell_lines.tax_id as tax_id',
@@ -823,6 +831,7 @@ class SellPosController extends Controller
 
                 //If modifier or combo sell line then unset
                 if (!empty($sell_details[$key]->parent_sell_line_id)) {
+
                     unset($sell_details[$key]);
                 } else {
                     if ($transaction->status != 'final') {
@@ -830,7 +839,6 @@ class SellPosController extends Controller
                         $sell_details[$key]->qty_available = $actual_qty_avlbl;
                         $value->qty_available = $actual_qty_avlbl;
                     }
-
                     $sell_details[$key]->formatted_qty_available = $this->productUtil->num_f($value->qty_available, false, null, true);
 
                     //Add available lot numbers for dropdown to sell lines
@@ -879,12 +887,19 @@ class SellPosController extends Controller
 
                     //Get details of combo items
                     if ($sell_details[$key]->product_type == 'combo') {
+
                         $sell_line_combos = TransactionSellLine::where('parent_sell_line_id', $sell_details[$key]->transaction_sell_lines_id)
                             ->where('children_type', 'combo')
-                            ->get()
-                            ->toArray();
+                            ->get()->toarray();
+
                         if (!empty($sell_line_combos)) {
+                            foreach ($sell_line_combos as $keys => $value) {
+                                $variation = Variation::with(['product', 'variation_location_details'])->findOrFail($value['variation_id']);
+                                $vld = $variation->variation_location_details->first();
+                                $sell_line_combos[$keys]['variation_location_details'] = $vld['location_id'];
+                            }
                             $sell_details[$key]->combo_products = $sell_line_combos;
+
                         }
 
                         //calculate quantity available if combo product
@@ -983,9 +998,8 @@ class SellPosController extends Controller
             $invoice_schemes = InvoiceScheme::forDropdown($business_id);
             $default_invoice_schemes = InvoiceScheme::getDefault($business_id);
         }
-
+        $sell_details = $sell_details->where('qty_available','>',0);
         $invoice_layouts = InvoiceLayout::forDropdown($business_id);
-
         return view('sale_pos.edit')
             ->with(compact('business_details', 'taxes', 'payment_types', 'walk_in_customer', 'sell_details', 'transaction', 'payment_lines', 'location_printer_type', 'shortcuts', 'commission_agent', 'categories', 'pos_settings', 'change_return', 'types', 'customer_groups', 'brands', 'accounts', 'waiters', 'redeem_details', 'edit_price', 'edit_discount', 'shipping_statuses', 'warranties', 'sub_type', 'pos_module_data', 'invoice_schemes', 'default_invoice_schemes', 'invoice_layouts', 'featured_products'));
     }
@@ -1023,6 +1037,7 @@ class SellPosController extends Controller
 
             $is_direct_sale = false;
             if (!empty($input['products'])) {
+
                 //Get transaction value before updating.
                 $transaction_before = Transaction::find($id);
                 $status_before =  $transaction_before->status;
@@ -1178,7 +1193,6 @@ class SellPosController extends Controller
                     //Update payment status
                     $payment_status = $this->transactionUtil->updatePaymentStatus($transaction->id, $transaction->final_total);
                     $transaction->payment_status = $payment_status;
-
                     //Update product stock
                     $this->productUtil->adjustProductStockForInvoice($status_before, $transaction, $input);
 
@@ -1259,6 +1273,7 @@ class SellPosController extends Controller
                         ];
             }
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
             $output = ['success' => 0,
@@ -1374,7 +1389,6 @@ class SellPosController extends Controller
 
         $check_qty = !empty($pos_settings['allow_overselling']) ? false : true;
         $product = $this->productUtil->getDetailsFromVariation($variation_id, $business_id, $location_id, $check_qty);
-
         if (!isset($product->quantity_ordered)) {
             $product->quantity_ordered = $quantity;
         }
@@ -1489,6 +1503,7 @@ class SellPosController extends Controller
             }
 
             $output = $this->getSellLineRow($variation_id, null, $quantity, $row_count, $is_direct_sell);
+            
             if ($this->transactionUtil->isModuleEnabled('modifiers')  && !$is_direct_sell) {
                 $variation = Variation::find($variation_id);
                 $business_id = request()->session()->get('user.business_id');
@@ -1496,6 +1511,7 @@ class SellPosController extends Controller
                                         ->with(['modifier_sets'])
                                         ->find($variation->product_id);
                 if (count($this_product->modifier_sets) > 0) {
+
                     $product_ms = $this_product->modifier_sets;
                     $output['html_modifier'] =  view('restaurant.product_modifier_set.modifier_for_product')
                     ->with(compact('product_ms', 'row_count'))->render();
@@ -1581,14 +1597,16 @@ class SellPosController extends Controller
         } else {
             $query->where('transactions.sub_type', null);
         }
-
+        $register_details =  $this->cashRegisterUtil->getRegisterDetails();
+        $open_time = $register_details['open_time'];
+        $close_time = \Carbon::now()->toDateTimeString();
         $transactions = $query->orderBy('transactions.created_at', 'desc')
+                          ->whereBetween('transactions.created_at', [$open_time, $close_time])
                             ->groupBy('transactions.id')
                             ->select('transactions.*')
                             ->with(['contact', 'table'])
                             ->limit(10)
                             ->get();
-
         return view('sale_pos.partials.recent_transactions')
             ->with(compact('transactions', 'transaction_sub_type'));
     }
@@ -1708,7 +1726,6 @@ class SellPosController extends Controller
                     'variation_location_details AS VLD',
                     function ($join) use ($location_id) {
                         $join->on('variations.id', '=', 'VLD.variation_id');
-
                         //Include Location
                         if (!empty($location_id)) {
                             $join->where(function ($query) use ($location_id) {
@@ -2673,7 +2690,7 @@ class SellPosController extends Controller
         $close_time = \Carbon::now()->toDateTimeString();
 
         $is_types_of_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
-
+        
         $details = $this->cashRegisterUtil->getRegisterTransactionDetails($user_id, $open_time, $close_time, $is_types_of_service_enabled);
             $output = ['is_enabled' => true,
             'print_type' => 'browser',
@@ -2683,7 +2700,7 @@ class SellPosController extends Controller
         ];
         $payment_types = $this->cashRegisterUtil->payment_types($register_details->location_id, true, $business_id);
         $html_content = view('sale_pos.receipts.register_details')
-                ->with(compact('register_details', 'details', 'payment_types', 'close_time'))->render();
+                ->with(compact('register_details', 'details', 'open_time','close_time','payment_types', 'close_time'))->render();
         $output['html_content'] = $html_content;
         $output['print_title'] = strtotime("now");
         return $output;        

@@ -99,7 +99,7 @@ function __currency_trans_from_en(
         precision = __quantity_precision;
     }
 
-    return accounting.formatMoney(input, symbol, precision, thousand, decimal, format);
+    return accounting.formatMoney(input, symbol, 0, thousand, decimal, format);
 }
 
 function __currency_convert_recursively(element, use_page_currency = false) {

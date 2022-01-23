@@ -262,7 +262,6 @@ class TransactionUtil extends Util
             if (!empty($product['sub_unit_id']) && !empty($product['base_unit_multiplier'])) {
                 $multiplier = $product['base_unit_multiplier'];
             }
-
             //Check if transaction_sell_lines_id is set, used when editing.
             if (!empty($product['transaction_sell_lines_id'])) {
                 $edit_id_temp = $this->editSellLine($product, $location_id, $status_before, $multiplier);
@@ -2075,11 +2074,11 @@ class TransactionUtil extends Util
     private function getInvoiceScheme($business_id, $location_id)
     {
         $scheme_id = BusinessLocation::where('business_id', $business_id)
-                    ->where('id', $location_id)
-                    ->first()
-                    ->invoice_scheme_id;
+                    ->Orwhere('id', $location_id)
+                    ->first()->invoice_scheme_id;
         if (!empty($scheme_id) && $scheme_id != 0) {
             $scheme = InvoiceScheme::find($scheme_id);
+
         }
 
         //Check if scheme is not found then return default scheme

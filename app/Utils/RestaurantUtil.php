@@ -94,7 +94,7 @@ class RestaurantUtil extends Util
             'bl.name as business_location',
             'rt.name as table_name'
         )->with(['sell_lines'])
-                ->orderBy('created_at', 'asc');
+                ->orderBy('created_at', 'desc');
         if(!empty($filter['single'])){
           $orders = $query->first();
         }else{
