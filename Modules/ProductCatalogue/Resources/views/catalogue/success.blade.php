@@ -35,7 +35,7 @@
                 <div class="cs-content-wrapper">
                     <h3>Terima Kasih Telah Memesan</h3>
                     <h2>Nomor Oderan Anda:</h2>
-                    <h2>KKJ0001</h2>
+                    <h2>{{$order_no}}</h2>
                     <div class="cs-subcribe-form subcribe-form fl-wrap">
                         <p>
                             Catatan : Harap Berikan Nomer Orderan Kepada Kasir Untuk melanjutkan Pemesanan
@@ -222,7 +222,7 @@
         <script src="{{ asset('catalogue/js/cs-scripts.js')}}"></script>
         <script>
                       var opts = {
-                            text: 'link',
+                            text: '<?php echo $order_no?>',
                             margin: 4,
                             width: 256,
                             height: 256,

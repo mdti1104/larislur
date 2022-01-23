@@ -262,7 +262,6 @@ class TransactionUtil extends Util
             if (!empty($product['sub_unit_id']) && !empty($product['base_unit_multiplier'])) {
                 $multiplier = $product['base_unit_multiplier'];
             }
-
             //Check if transaction_sell_lines_id is set, used when editing.
             if (!empty($product['transaction_sell_lines_id'])) {
                 $edit_id_temp = $this->editSellLine($product, $location_id, $status_before, $multiplier);

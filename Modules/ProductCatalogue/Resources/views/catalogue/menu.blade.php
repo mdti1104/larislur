@@ -8,6 +8,7 @@
         <meta name="robots" content="index, follow"/>
         <meta name="keywords" content=""/>
         <meta name="description" content=""/>
+        <meta name="csrf_token" content="{{ csrf_token() }}" />
         <!--=============== css  ===============-->	
         <link type="text/css" rel="stylesheet" href="{{ asset('catalogue/css/reset.css')}}">
         <link type="text/css" rel="stylesheet" href="{{ asset('catalogue/css/plugins.css')}}">
@@ -98,7 +99,7 @@
                                                     <div class="hero-menu-item-title fl-wrap">
                                                         <h6>{{$product->name}}</h6>
                                                         <span class="hero-menu-item-price">Rp. {{(number_format($max_price,0,',','.'))}}</span>
-                                                        <div class="add_cart @if($has_modifier)  show-rb @endif" @if($has_modifier) data-attribute="{!! json_encode($modifier) !!}" @endif>Add To Cart</div>
+                                                        <div class="add_cart @if($has_modifier)  show-rb @endif" @if($has_modifier) data-attribute="{!! json_encode($modifier) !!}" @endif data-price="{{$max_price}}" data-id="{{$product->id}}" >Add To Cart</div>
                                                     </div>
                                                     <div class="hero-menu-item-details">
                                                         <p>{{$product->description}}</p>
@@ -202,10 +203,33 @@
         <script src="{{ asset('catalogue/js/jquery.min.js')}}"></script>
         <script src="{{ asset('catalogue/js/plugins.js')}}"></script>
         <script src="{{ asset('catalogue/js/scripts.js')}}"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         <script>
             $(document).ready(function(){
                 $('.add_cart').click(function(){
-                    
+                    var price,id
+                    price = $(this).data('price')
+                    id = $(this).data('id')
+                 
+                    $.ajax({
+                        type:'POST',
+                        url:'/add_cart/',
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        data:{
+                            'id_product' : id,
+                            'id_variant' : null,
+                            'price' : price,
+                            "_token": "{{ csrf_token() }}",                            
+                        },
+                        success:function(data){
+                            Swal.fire(
+                                'Success!',
+                                'Berhasil Tambahkan Keranjang!',
+                                'success'
+                                )
+                        }
+                    });
                 })
             })
         </script>

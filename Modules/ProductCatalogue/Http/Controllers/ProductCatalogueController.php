@@ -125,7 +125,7 @@ class ProductCatalogueController extends Controller
         
         $paginator  = Category::where('business_id',$business_id)->where('category_type', 'product')
         ->paginate(4);
-
+        session()->put('business_id',$business_id);
         return view('productcatalogue::catalogue.index')->with(compact('paginator','business_id'));
     }
     public function Category($business_id,$categories_id)
@@ -142,9 +142,46 @@ class ProductCatalogueController extends Controller
     }
     public function success(Request $request)
     {
+        $max = DB::table('orders_catalog')->orderBy('orders_id','DESC')->first();
+        if ($max) {
+                $order_no = $this->generateOrderNo($max->orders_id + 1);
+        }else{
+                $order_no = $this->generateOrderNo(1);
+        }
+        $cart = $request->session()->get('cart');
+        if(!empty($cart)){
+                $order_id = DB::table('orders_catalog')->insertGetId([
+                    'order_no' => $order_no,
+                    'session_id' => session()->getId(),
+                ]);
+                $carts = $this->CartMapping($cart);
+                foreach ($carts['cart'] as $key => $value) {
+                if ($value['variant']) {
+                    $data = [
+                        'id_product' => $value['id_product'],
+                        'id_orders' => $order_id,
+                        'variation_id' => $value['id'],
+                        'quantity' => $value['quantity'],
+                    ];
+                }else{
+                    $data = [
+                        'id_product' => $value['id'],
+                        'id_orders' => $order_id,
+                        'quantity' => $value['quantity'],
+                        'variation_id' => null
+                    ];
+                }
+                DB::table('product_orders')->insert($data);
+            }
+            \Session::forget('cart');
+            \Session::save();
+            $request->session()->regenerate();
+            return view('productcatalogue::catalogue.success',compact('order_no'));
+        }else{
+            $business_id = session()->get('business_id');
+            return redirect('/catalogue/'.$business_id);
+        }
   
-
-        return view('productcatalogue::catalogue.success');
 
     }
     public function generateOrderNo($string)
@@ -160,10 +197,11 @@ class ProductCatalogueController extends Controller
         $request->session()->put('cart',$new);
         return redirect()->back();
     }
-    public function CartMapping($cart)
+    private function CartMapping($cart)
     {
         $return = [];
         $total = 0;
+
         if ($cart) {
             foreach ($cart as $key => $value) {
                 $product = Product::with(['variations', 'variations.product_variation', 'variations.group_prices', 'variations.media', 'product_locations', 'warranty'])
@@ -213,22 +251,24 @@ class ProductCatalogueController extends Controller
     {
 
         $cart = $request->session()->get('cart');
+      
+
         $mapp = $this->CartMapping($cart);
         return view('productcatalogue::catalogue.cart',$mapp);
     }
     public function add_cart(Request $request)
     {
-      $cart = $request->session()->get('cart');
+        $cart = $request->session()->get('cart');
         if ($cart) {
             $array = [];
-            $data = ['id_product' => $request->id,'id_variant' => $request->variant,'price' => $request->price];
+            $data = ['id_product' => $request->id_product,'id_variant' => $request->variant,'price' => $request->price];
             array_push($cart,$data);
             $request->session()->put('cart',$cart);
         }else{
             $array = [];
             array_push($array,[
 
-                'id_product' => $request->id,
+                'id_product' => $request->id_product,
                 'id_variant' => $request->variant,
                 'price' => $request->price
             ]);

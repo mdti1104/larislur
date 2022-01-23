@@ -252,7 +252,7 @@
 		@if($product->product_type == 'combo'&& !empty($product->combo_products))
 
 			@foreach($product->combo_products as $k => $combo_product)
-
+				
 				@if(isset($action) && $action == 'edit')
 					@php
 						$combo_product['qty_required'] = $combo_product['quantity'] / $product->quantity_ordered;
