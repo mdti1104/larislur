@@ -43,7 +43,7 @@ class TaxonomyController extends Controller
 
             $category = Category::where('business_id', $business_id)
                             ->where('category_type', $category_type)
-                            ->select(['name', 'short_code', 'description', 'id', 'parent_id']);
+                            ->select(['name', 'short_code', 'description', 'id', 'parent_id','images','sequence']);
 
             return Datatables::of($category)
                 ->addColumn(
@@ -62,9 +62,12 @@ class TaxonomyController extends Controller
                         return $row->name;
                     }
                 })
+                ->editColumn('images', function ($row) {
+                    return '<div style="display: flex;"><img src="/uploads/cat/' . $row->images . '" alt="Product image" class="product-thumbnail-small"></div>';
+                })
                 ->removeColumn('id')
                 ->removeColumn('parent_id')
-                ->rawColumns(['action'])
+                ->rawColumns(['action','images'])
                 ->make(true);
         }
 
@@ -113,13 +116,14 @@ class TaxonomyController extends Controller
      */
     public function store(Request $request)
     {
+        $new_file_name = time() . '_' . $request->images->getClientOriginalName();
         $category_type = request()->input('category_type');
         if ($category_type == 'product' && !auth()->user()->can('category.view') && !auth()->user()->can('category.create')) {
             abort(403, 'Unauthorized action.');
         }
 
         try {
-            $input = $request->only(['name', 'short_code', 'category_type', 'description']);
+            $input = $request->only(['name', 'short_code', 'category_type', 'description','sequence']);
             if (!empty($request->input('add_as_sub_cat')) &&  $request->input('add_as_sub_cat') == 1 && !empty($request->input('parent_id'))) {
                 $input['parent_id'] = $request->input('parent_id');
             } else {
@@ -127,8 +131,9 @@ class TaxonomyController extends Controller
             }
             $input['business_id'] = $request->session()->get('user.business_id');
             $input['created_by'] = $request->session()->get('user.id');
-
+            $input['images'] = $new_file_name;
             $category = Category::create($input);
+            $request->images->storeAs('cat', $new_file_name);
             $output = ['success' => true,
                             'data' => $category,
                             'msg' => __("category.added_success")
@@ -141,7 +146,7 @@ class TaxonomyController extends Controller
                         ];
         }
 
-        return $output;
+        return redirect()->back();
     }
 
     /**
@@ -163,6 +168,7 @@ class TaxonomyController extends Controller
      */
     public function edit($id)
     {
+        
         $category_type = request()->get('type');
         if ($category_type == 'product' && !auth()->user()->can('category.view') && !auth()->user()->can('category.create')) {
             abort(403, 'Unauthorized action.');
@@ -203,13 +209,17 @@ class TaxonomyController extends Controller
     public function update(Request $request, $id)
     {
 
-        if (request()->ajax()) {
+        if (!request()->ajax()) {
             try {
-                $input = $request->only(['name', 'description']);
+                $new_file_name = time() . '_' . $request->images->getClientOriginalName();
+                $input = $request->only(['name', 'description','sequence']);
                 $business_id = $request->session()->get('user.business_id');
+                $input['images'] = $new_file_name;
 
                 $category = Category::where('business_id', $business_id)->findOrFail($id);
                 $category->name = $input['name'];
+                $category->images = $input['images'];
+                $category->sequence = $input['sequence'];
                 $category->description = $input['description'];
                 $category->short_code = $request->input('short_code');
                 
@@ -219,19 +229,20 @@ class TaxonomyController extends Controller
                     $category->parent_id = 0;
                 }
                 $category->save();
+                $request->images->storeAs('cat', $new_file_name);
 
                 $output = ['success' => true,
                             'msg' => __("category.updated_success")
                             ];
             } catch (\Exception $e) {
+                dd($e);
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
                 $output = ['success' => false,
                             'msg' => __("messages.something_went_wrong")
                         ];
             }
 
-            return $output;
+            return redirect()->back();
         }
     }
 

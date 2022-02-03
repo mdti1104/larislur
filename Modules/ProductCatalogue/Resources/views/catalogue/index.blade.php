@@ -71,8 +71,8 @@
 
                                              <div class="gallery-item desserts">
                                                 <div class="grid-item-holder hov_zoom">
-                                                    <a href="{{ asset('catalogue/images/menu/1.jpg')}}" class="box-media-zoom   popup-image"><i class="fal fa-search"></i></a>
-                                                    <img  src="{{ asset('catalogue/images/menu/1.jpg')}}"    alt="">
+                                                    <a href="/uploads/cat/{{$categories->images}}" class="box-media-zoom   popup-image"><i class="fal fa-search"></i></a>
+                                                    <img  src="/uploads/cat/{{$categories->images}}"    alt="">
                                                 </div>
                                                 <div class="grid-item-details">
                                                     <h3><a href="product-single.html">{{$categories->name}}</a></h3>

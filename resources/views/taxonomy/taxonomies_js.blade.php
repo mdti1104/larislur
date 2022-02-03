@@ -29,6 +29,8 @@
                             { data: 'short_code', name: 'short_code' },
                         @endif
                         { data: 'description', name: 'description' },
+                        { data: 'images', name: 'images' },
+                        { data: 'sequence', name: 'sequence' },
                         { data: 'action', name: 'action', orderable: false, searchable: false},
                     ],
                 });
@@ -41,58 +43,35 @@
 
         initializeTaxonomyDataTable();
     });
-    $(document).on('submit', 'form#category_add_form', function(e) {
-        e.preventDefault();
-        var form = $(this);
-        var data = form.serialize();
-
-        $.ajax({
-            method: 'POST',
-            url: $(this).attr('action'),
-            dataType: 'json',
-            data: data,
-            beforeSend: function(xhr) {
-                __disable_submit_button(form.find('button[type="submit"]'));
-            },
-            success: function(result) {
-                if (result.success === true) {
-                    $('div.category_modal').modal('hide');
-                    toastr.success(result.msg);
-                    category_table.ajax.reload();
-                } else {
-                    toastr.error(result.msg);
-                }
-            },
-        });
-    });
+    
     $(document).on('click', 'button.edit_category_button', function() {
         $('div.category_modal').load($(this).data('href'), function() {
             $(this).modal('show');
 
-            $('form#category_edit_form').submit(function(e) {
-                e.preventDefault();
-                var form = $(this);
-                var data = form.serialize();
+            // $('form#category_edit_form').submit(function(e) {
+            //     e.preventDefault();
+            //     var form = $(this);
+            //     var data = form.serialize();
 
-                $.ajax({
-                    method: 'POST',
-                    url: $(this).attr('action'),
-                    dataType: 'json',
-                    data: data,
-                    beforeSend: function(xhr) {
-                        __disable_submit_button(form.find('button[type="submit"]'));
-                    },
-                    success: function(result) {
-                        if (result.success === true) {
-                            $('div.category_modal').modal('hide');
-                            toastr.success(result.msg);
-                            category_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            });
+            //     $.ajax({
+            //         method: 'POST',
+            //         url: $(this).attr('action'),
+            //         dataType: 'json',
+            //         data: data,
+            //         beforeSend: function(xhr) {
+            //             __disable_submit_button(form.find('button[type="submit"]'));
+            //         },
+            //         success: function(result) {
+            //             if (result.success === true) {
+            //                 $('div.category_modal').modal('hide');
+            //                 toastr.success(result.msg);
+            //                 category_table.ajax.reload();
+            //             } else {
+            //                 toastr.error(result.msg);
+            //             }
+            //         },
+            //     });
+            // });
         });
     });
 
