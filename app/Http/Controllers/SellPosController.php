@@ -584,7 +584,8 @@ class SellPosController extends Controller
                         ];
             }
         } catch (\Exception $e) {
-            DB::rollBack();
+	dd($e);    
+        DB::rollBack();
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
             $msg = trans("messages.something_went_wrong");
                 
