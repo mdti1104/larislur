@@ -1,7 +1,7 @@
 <div class="modal-dialog" role="document">
   <div class="modal-content">
 
-    {!! Form::open(['url' => action('TaxonomyController@update', [$category->id]), 'method' => 'PUT', 'id' => 'category_edit_form' ]) !!}
+    {!! Form::open(['url' => action('TaxonomyController@update', [$category->id]), 'method' => 'PUT', 'id' => 'category_edit_form' ,'files' => true ,'enctype'=>'multipart/form-data']) !!}
 
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -22,6 +22,14 @@
       <div class="form-group">
         {!! Form::label('name', $name_label . ':*') !!}
         {!! Form::text('name', $category->name, ['class' => 'form-control', 'required', 'placeholder' => $name_label]); !!}
+      </div>
+      <div class="form-group">
+        {!! Form::label('Sequence', 'Sequence' . ':*') !!}
+          {!! Form::number('sequence', null, ['class' => 'form-control', 'required', 'placeholder' => 'Enter Sequence']); !!}
+      </div>
+      <div class="form-group">
+        {!! Form::label('images', 'Images Category' . ':*') !!}
+        {!! Form::file('images', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
       </div>
       @if($cat_code_enabled)
       <div class="form-group">

@@ -50,6 +50,8 @@
                                 <th>{{ $module_category_data['taxonomy_code_label'] ?? __( 'category.code' )}}</th>
                             @endif
                             <th>@lang( 'lang_v1.description' )</th>
+                            <th>Images</th>
+                            <th>Sequence</th>
                             <th>@lang( 'messages.action' )</th>
                         </tr>
                     </thead>
