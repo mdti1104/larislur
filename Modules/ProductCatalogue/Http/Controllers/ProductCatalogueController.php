@@ -124,6 +124,7 @@ class ProductCatalogueController extends Controller
     {
         
         $paginator  = Category::where('business_id',$business_id)->where('category_type', 'product')
+        ->orderBy('sequence','asc')
         ->paginate(4);
         session()->put('business_id',$business_id);
         return view('productcatalogue::catalogue.index')->with(compact('paginator','business_id'));
